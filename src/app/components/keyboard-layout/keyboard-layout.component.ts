@@ -18,7 +18,7 @@ export class KeyboardLayoutComponent implements OnInit, OnDestroy {
   selectedAction: Action | null = null;
   keyMappings = new Map<string, KeyMapping>();
 
-  // UK Keyboard Layout
+  // US ANSI Keyboard Layout (matching user's keyboard)
   keyboardRows: KeyboardKey[][] = [
     // Function row
     [
@@ -68,7 +68,7 @@ export class KeyboardLayoutComponent implements OnInit, OnDestroy {
       { code: 'KeyP', display: 'P', row: 2, col: 10 },
       { code: 'BracketLeft', display: '[', row: 2, col: 11 },
       { code: 'BracketRight', display: ']', row: 2, col: 12 },
-      { code: 'Enter', display: 'Enter', row: 2, col: 13, width: 1.5, className: 'key-wide key-enter' }
+      { code: 'Backslash', display: '\\', row: 2, col: 13, width: 1.5, className: 'key-wide' }
     ],
     // ASDF row
     [
@@ -84,23 +84,22 @@ export class KeyboardLayoutComponent implements OnInit, OnDestroy {
       { code: 'KeyL', display: 'L', row: 3, col: 9 },
       { code: 'Semicolon', display: ';', row: 3, col: 10 },
       { code: 'Quote', display: "'", row: 3, col: 11 },
-      { code: 'Backslash', display: '#', row: 3, col: 12 }
+      { code: 'Enter', display: 'Enter', row: 3, col: 12, width: 2.25, className: 'key-wide key-enter' }
     ],
     // ZXCV row
     [
-      { code: 'ShiftLeft', display: 'Shift', row: 4, col: 0, width: 1.25, className: 'key-wide' },
-      { code: 'IntlBackslash', display: '\\', row: 4, col: 1 },
-      { code: 'KeyZ', display: 'Z', row: 4, col: 2 },
-      { code: 'KeyX', display: 'X', row: 4, col: 3 },
-      { code: 'KeyC', display: 'C', row: 4, col: 4 },
-      { code: 'KeyV', display: 'V', row: 4, col: 5 },
-      { code: 'KeyB', display: 'B', row: 4, col: 6 },
-      { code: 'KeyN', display: 'N', row: 4, col: 7 },
-      { code: 'KeyM', display: 'M', row: 4, col: 8 },
-      { code: 'Comma', display: ',', row: 4, col: 9 },
-      { code: 'Period', display: '.', row: 4, col: 10 },
-      { code: 'Slash', display: '/', row: 4, col: 11 },
-      { code: 'ShiftRight', display: 'Shift', row: 4, col: 12, width: 2.75, className: 'key-wide' }
+      { code: 'ShiftLeft', display: 'Shift', row: 4, col: 0, width: 2.25, className: 'key-wide' },
+      { code: 'KeyZ', display: 'Z', row: 4, col: 1 },
+      { code: 'KeyX', display: 'X', row: 4, col: 2 },
+      { code: 'KeyC', display: 'C', row: 4, col: 3 },
+      { code: 'KeyV', display: 'V', row: 4, col: 4 },
+      { code: 'KeyB', display: 'B', row: 4, col: 5 },
+      { code: 'KeyN', display: 'N', row: 4, col: 6 },
+      { code: 'KeyM', display: 'M', row: 4, col: 7 },
+      { code: 'Comma', display: ',', row: 4, col: 8 },
+      { code: 'Period', display: '.', row: 4, col: 9 },
+      { code: 'Slash', display: '/', row: 4, col: 10 },
+      { code: 'ShiftRight', display: 'Shift', row: 4, col: 11, width: 2.75, className: 'key-wide' }
     ],
     // Bottom row
     [
@@ -151,9 +150,11 @@ export class KeyboardLayoutComponent implements OnInit, OnDestroy {
     if (mapping && mapping.actionId) {
       const action = this.actionsService.getActionById(mapping.actionId);
       if (action) {
-        baseStyle['background-color'] = action.color;
-        baseStyle['color'] = this.getContrastColor(action.color);
-        baseStyle['border-color'] = action.color;
+        // Fill the entire key with the action color
+        const actionColor = this.actionsService.getActionColor(action);
+        baseStyle['background'] = actionColor;
+        baseStyle['color'] = this.getContrastColor(actionColor);
+        baseStyle['border-color'] = actionColor;
       }
     }
 

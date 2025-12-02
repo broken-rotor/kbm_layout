@@ -1,7 +1,9 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Action } from '../../models/interfaces';
+import { Subject, takeUntil } from 'rxjs';
+import { Action, ColorGroup } from '../../models/interfaces';
+import { ColorGroupsService } from '../../services/color-groups.service';
 
 @Component({
   selector: 'app-action-dialog',
@@ -10,34 +12,45 @@ import { Action } from '../../models/interfaces';
   templateUrl: './action-dialog.component.html',
   styleUrls: ['./action-dialog.component.css']
 })
-export class ActionDialogComponent implements OnInit {
+export class ActionDialogComponent implements OnInit, OnDestroy {
+  private colorGroupsService = inject(ColorGroupsService);
+  private destroy$ = new Subject<void>();
+
   @Input() action: Action | null = null;
-  @Output() save = new EventEmitter<{ name: string; color: string }>();
+  @Output() save = new EventEmitter<{ name: string; colorGroupId: string }>();
   @Output() cancelled = new EventEmitter<void>();
 
   actionName = '';
-  actionColor = '#3498db';
-  
-  // Predefined color palette
-  colorPalette = [
-    '#3498db', '#e74c3c', '#2ecc71', '#f39c12', '#9b59b6',
-    '#1abc9c', '#34495e', '#e67e22', '#95a5a6', '#f1c40f',
-    '#8e44ad', '#16a085', '#2c3e50', '#d35400', '#7f8c8d',
-    '#27ae60', '#c0392b', '#2980b9', '#8e44ad', '#d68910'
-  ];
+  selectedColorGroupId = '';
+  colorGroups: ColorGroup[] = [];
 
   ngOnInit(): void {
+    this.colorGroupsService.colorGroups$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(groups => {
+        this.colorGroups = groups;
+        // Set default selection to first group if no action is being edited
+        if (!this.action && groups.length > 0 && !this.selectedColorGroupId) {
+          this.selectedColorGroupId = groups[0].id;
+        }
+      });
+
     if (this.action) {
       this.actionName = this.action.name;
-      this.actionColor = this.action.color;
+      this.selectedColorGroupId = this.action.colorGroupId;
     }
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   onSave(): void {
-    if (this.actionName.trim()) {
+    if (this.actionName.trim() && this.selectedColorGroupId) {
       this.save.emit({
         name: this.actionName.trim(),
-        color: this.actionColor
+        colorGroupId: this.selectedColorGroupId
       });
     }
   }
@@ -46,13 +59,12 @@ export class ActionDialogComponent implements OnInit {
     this.cancelled.emit();
   }
 
-  onColorSelect(color: string): void {
-    this.actionColor = color;
+  onColorGroupSelect(colorGroupId: string): void {
+    this.selectedColorGroupId = colorGroupId;
   }
 
-  onCustomColorChange(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    this.actionColor = target.value;
+  getSelectedColorGroup(): ColorGroup | undefined {
+    return this.colorGroups.find(group => group.id === this.selectedColorGroupId);
   }
 
   getContrastColor(hexColor: string): string {

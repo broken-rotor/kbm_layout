@@ -1,0 +1,74 @@
+<div class="color-groups-container">
+  <div class="header">
+    <h2>Color Groups</h2>
+    <button class="btn btn-primary" (click)="onAddGroup()">
+      Add Color Group
+    </button>
+  </div>
+
+  <div class="color-groups-list">
+    @for (group of colorGroups; track group.id) {
+      <div class="color-group-item">
+        <div class="color-preview" [style.background-color]="group.color">
+          <span [style.color]="getContrastColor(group.color)">{{ group.name }}</span>
+        </div>
+        <div class="group-actions">
+          <button class="btn btn-secondary" (click)="onEditGroup(group)">
+            Edit
+          </button>
+          <button class="btn btn-danger" (click)="onDeleteGroup(group)">
+            Delete
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Add/Edit Dialog -->
+  @if (showAddDialog) {
+    <div class="dialog-overlay">
+      <div class="dialog">
+        <div class="dialog-header">
+          <h3>{{ editingGroup ? 'Edit' : 'Add' }} Color Group</h3>
+        </div>
+        
+        <div class="dialog-content">
+          <div class="form-group">
+            <label for="groupName">Group Name:</label>
+            <input 
+              id="groupName"
+              type="text" 
+              [(ngModel)]="groupName" 
+              placeholder="Enter group name"
+              class="form-input"
+            />
+          </div>
+          
+          <div class="form-group">
+            <label for="groupColor">Color:</label>
+            <div class="color-input-container">
+              <input 
+                id="groupColor"
+                type="color" 
+                [(ngModel)]="groupColor" 
+                class="color-input"
+              />
+              <div class="color-preview-small" [style.background-color]="groupColor">
+                <span [style.color]="getContrastColor(groupColor)">Preview</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="dialog-actions">
+          <button class="btn btn-secondary" (click)="onCancelDialog()">
+            Cancel
+          </button>
+          <button class="btn btn-primary" (click)="onSaveGroup()">
+            {{ editingGroup ? 'Update' : 'Create' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+}</div>

@@ -92,42 +92,39 @@
   gap: 16px;
 }
 
-.color-palette {
+.color-groups-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 8px;
   max-width: 400px;
 }
 
-.color-option {
-  width: 40px;
-  height: 40px;
+.color-group-option {
+  padding: 8px 12px;
   border: 3px solid transparent;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.color-option:hover {
-  transform: scale(1.1);
+.color-group-option:hover {
+  transform: scale(1.05);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-.color-option.selected {
+.color-group-option.selected {
   border-color: #333;
-  transform: scale(1.1);
+  transform: scale(1.05);
   box-shadow: 0 0 0 2px white, 0 0 0 4px #333;
 }
-
-.custom-color {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.custom-color label {
-  margin: 0;
   font-size: 14px;
   color: #666;
 }
@@ -164,6 +161,7 @@
   background: white;
   border-radius: 8px;
   border: 2px solid #e0e0e0;
+  flex-wrap: wrap;
 }
 
 .preview-color {
@@ -183,6 +181,13 @@
   font-weight: 600;
   color: #333;
   font-size: 14px;
+}
+
+.preview-group {
+  font-size: 12px;
+  color: #666;
+  font-style: italic;
+  margin-left: auto;
 }
 
 .dialog-footer {
