@@ -1,15 +1,16 @@
 <div class="mouse-container">
   <div class="mouse-layout">
     <div class="mouse-body">
-      <button
-        *ngFor="let button of mouseButtons"
-        class="{{ getButtonClasses(button) }}"
-        [ngStyle]="getButtonStyle(button)"
-        (click)="onButtonClick(button)"
-        [title]="button.display"
-        type="button">
-        <span class="button-label">{{ button.display }}</span>
-      </button>
+      @for (button of mouseButtons; track button.code) {
+        <button
+          class="{{ getButtonClasses(button) }}"
+          [ngStyle]="getButtonStyle(button)"
+          (click)="onButtonClick(button)"
+          [title]="button.display"
+          type="button">
+          <span class="button-label">{{ button.display }}</span>
+        </button>
+      }
     </div>
   </div>
 </div>

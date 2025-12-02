@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { Action, KeyMapping, DeviceType } from '../models/interfaces';
 import { StorageService } from './storage.service';
 
@@ -7,6 +7,8 @@ import { StorageService } from './storage.service';
   providedIn: 'root'
 })
 export class ActionsService {
+  private storageService = inject(StorageService);
+
   private actionsSubject = new BehaviorSubject<Action[]>([]);
   private selectedActionSubject = new BehaviorSubject<Action | null>(null);
   private selectedDeviceSubject = new BehaviorSubject<DeviceType>(DeviceType.KEYBOARD);
@@ -17,7 +19,7 @@ export class ActionsService {
   public selectedDevice$ = this.selectedDeviceSubject.asObservable();
   public keyMappings$ = this.keyMappingsSubject.asObservable();
 
-  constructor(private storageService: StorageService) {
+  constructor() {
     this.loadData();
   }
 

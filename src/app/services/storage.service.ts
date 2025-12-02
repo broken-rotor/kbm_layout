@@ -8,8 +8,6 @@ export class StorageService {
   private readonly ACTIONS_KEY = 'kbm_layout_actions';
   private readonly MAPPINGS_KEY = 'kbm_layout_mappings';
 
-  constructor() {}
-
   // Actions storage
   saveActions(actions: Action[]): void {
     try {

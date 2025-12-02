@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 import { ActionsService } from '../../services/actions.service';
@@ -12,10 +12,11 @@ import { KeyboardKey, DeviceType, Action, KeyMapping } from '../../models/interf
   styleUrls: ['./keyboard-layout.component.css']
 })
 export class KeyboardLayoutComponent implements OnInit, OnDestroy {
+  private actionsService = inject(ActionsService);
   private destroy$ = new Subject<void>();
-  
+
   selectedAction: Action | null = null;
-  keyMappings: Map<string, KeyMapping> = new Map();
+  keyMappings = new Map<string, KeyMapping>();
 
   // UK Keyboard Layout
   keyboardRows: KeyboardKey[][] = [
@@ -114,8 +115,6 @@ export class KeyboardLayoutComponent implements OnInit, OnDestroy {
     ]
   ];
 
-  constructor(private actionsService: ActionsService) {}
-
   ngOnInit(): void {
     this.actionsService.selectedAction$
       .pipe(takeUntil(this.destroy$))
@@ -145,9 +144,9 @@ export class KeyboardLayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  getKeyStyle(key: KeyboardKey): any {
+  getKeyStyle(key: KeyboardKey): Record<string, string> {
     const mapping = this.keyMappings.get(key.code);
-    const baseStyle: any = {};
+    const baseStyle: Record<string, string> = {};
 
     if (mapping && mapping.actionId) {
       const action = this.actionsService.getActionById(mapping.actionId);

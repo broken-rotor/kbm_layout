@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 import { ActionsService } from './services/actions.service';
@@ -19,13 +19,12 @@ import { ActionsListComponent } from './components/actions-list/actions-list.com
   styleUrl: './app.css'
 })
 export class App implements OnInit, OnDestroy {
+  private actionsService = inject(ActionsService);
   private destroy$ = new Subject<void>();
-  
+
   title = 'Device Layout Manager';
   selectedDevice: DeviceType = DeviceType.KEYBOARD;
   DeviceType = DeviceType;
-
-  constructor(private actionsService: ActionsService) {}
 
   ngOnInit(): void {
     this.actionsService.selectedDevice$

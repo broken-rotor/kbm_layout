@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 import { ActionsService } from '../../services/actions.service';
@@ -13,14 +13,13 @@ import { ActionDialogComponent } from '../action-dialog/action-dialog.component'
   styleUrls: ['./actions-list.component.css']
 })
 export class ActionsListComponent implements OnInit, OnDestroy {
+  private actionsService = inject(ActionsService);
   private destroy$ = new Subject<void>();
-  
+
   actions: Action[] = [];
   selectedAction: Action | null = null;
   showActionDialog = false;
   editingAction: Action | null = null;
-
-  constructor(private actionsService: ActionsService) {}
 
   ngOnInit(): void {
     this.actionsService.actions$
