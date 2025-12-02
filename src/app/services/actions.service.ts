@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Action, KeyMapping, DeviceType, ColorGroup } from '../models/interfaces';
+import { Action, KeyMapping, DeviceType } from '../models/interfaces';
 import { StorageService } from './storage.service';
 import { ColorGroupsService } from './color-groups.service';
 

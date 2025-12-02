@@ -1,34 +1,31 @@
-import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { ColorGroup } from '../models/interfaces';
-import { StorageService } from './storage.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ColorGroupsService {
-  private storageService = inject(StorageService);
-  
   private colorGroupsSubject = new BehaviorSubject<ColorGroup[]>([]);
   public colorGroups$ = this.colorGroupsSubject.asObservable();
 
-  private readonly STORAGE_KEY = 'colorGroups';
+  private readonly STORAGE_KEY = 'kbm_layout_color_groups';
 
   constructor() {
     this.loadColorGroups();
   }
 
   private loadColorGroups(): void {
-    const stored = this.storageService.getItem(this.STORAGE_KEY);
-    if (stored) {
-      try {
+    try {
+      const stored = localStorage.getItem(this.STORAGE_KEY);
+      if (stored) {
         const colorGroups = JSON.parse(stored) as ColorGroup[];
         this.colorGroupsSubject.next(colorGroups);
-      } catch (error) {
-        console.error('Error loading color groups:', error);
+      } else {
         this.initializeDefaultColorGroups();
       }
-    } else {
+    } catch (error) {
+      console.error('Error loading color groups:', error);
       this.initializeDefaultColorGroups();
     }
   }
@@ -50,8 +47,12 @@ export class ColorGroupsService {
   }
 
   private saveColorGroups(): void {
-    const colorGroups = this.colorGroupsSubject.value;
-    this.storageService.setItem(this.STORAGE_KEY, JSON.stringify(colorGroups));
+    try {
+      const colorGroups = this.colorGroupsSubject.value;
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(colorGroups));
+    } catch (error) {
+      console.error('Failed to save color groups to localStorage:', error);
+    }
   }
 
   getColorGroups(): ColorGroup[] {

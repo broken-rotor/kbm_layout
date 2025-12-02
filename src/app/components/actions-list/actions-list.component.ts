@@ -113,6 +113,10 @@ export class ActionsListComponent implements OnInit, OnDestroy {
     return 'Not Mapped';
   }
 
+  getActionColor(action: Action): string {
+    return this.actionsService.getActionColor(action);
+  }
+
   getContrastColor(hexColor: string): string {
     // Convert hex to RGB
     const r = parseInt(hexColor.slice(1, 3), 16);

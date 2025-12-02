@@ -14,8 +14,8 @@
         role="button">
       
       <div class="action-color" 
-           [style.background-color]="action.color"
-           [style.color]="getContrastColor(action.color)">
+           [style.background-color]="getActionColor(action)"
+           [style.color]="getContrastColor(getActionColor(action))">
         ●
       </div>
       
