@@ -1,0 +1,146 @@
+.mouse-container {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  background: #f5f5f5;
+  border-radius: 12px;
+  margin: 20px 0;
+}
+
+.mouse-layout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.mouse-body {
+  position: relative;
+  width: 240px;
+  height: 150px;
+  background: linear-gradient(145deg, #e0e0e0, #c0c0c0);
+  border-radius: 60px 60px 30px 30px;
+  border: 3px solid #999;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.mouse-button {
+  position: absolute;
+  border: 2px solid #666;
+  border-radius: 8px;
+  background: linear-gradient(145deg, #f0f0f0, #d0d0d0);
+  color: #333;
+  font-size: 10px;
+  font-weight: 500;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  user-select: none;
+}
+
+.mouse-button:hover {
+  background: linear-gradient(145deg, #e8e8e8, #c8c8c8);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+.mouse-button:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.mouse-button.button-selectable {
+  border-color: #007acc;
+  box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.3);
+}
+
+.mouse-button.button-selectable:hover {
+  border-color: #005a9e;
+  box-shadow: 0 0 0 2px rgba(0, 90, 158, 0.4);
+}
+
+.mouse-button.button-mapped {
+  border-width: 3px;
+  font-weight: 600;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+.mouse-button.button-mapped:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.button-label {
+  font-size: 9px;
+  line-height: 1.2;
+  text-align: center;
+  word-break: break-word;
+}
+
+/* Specific button styles */
+.mouse-button.mouse-left {
+  border-radius: 20px 8px 8px 8px;
+}
+
+.mouse-button.mouse-right {
+  border-radius: 8px 20px 8px 8px;
+}
+
+.mouse-button.mouse-middle {
+  border-radius: 8px;
+  background: linear-gradient(145deg, #d0d0d0, #b0b0b0);
+}
+
+.mouse-button.mouse-scroll {
+  border-radius: 15px;
+  background: linear-gradient(145deg, #c0c0c0, #a0a0a0);
+  font-size: 8px;
+}
+
+.mouse-button.mouse-side {
+  border-radius: 12px;
+  background: linear-gradient(145deg, #e8e8e8, #c8c8c8);
+  font-size: 8px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .mouse-container {
+    padding: 10px;
+    margin: 10px 0;
+  }
+  
+  .mouse-body {
+    width: 200px;
+    height: 125px;
+    transform: scale(0.9);
+  }
+  
+  .mouse-button {
+    font-size: 9px;
+  }
+  
+  .button-label {
+    font-size: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .mouse-body {
+    width: 180px;
+    height: 110px;
+    transform: scale(0.8);
+  }
+  
+  .mouse-button {
+    font-size: 8px;
+  }
+  
+  .button-label {
+    font-size: 7px;
+  }
+}

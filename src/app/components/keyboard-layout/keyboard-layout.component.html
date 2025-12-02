@@ -1,0 +1,15 @@
+<div class="keyboard-container">
+  <div class="keyboard-layout">
+    <div class="keyboard-row" *ngFor="let row of keyboardRows; let rowIndex = index">
+      <button
+        *ngFor="let key of row"
+        class="{{ getKeyClasses(key) }}"
+        [ngStyle]="getKeyStyle(key)"
+        (click)="onKeyClick(key)"
+        [title]="key.display"
+        type="button">
+        {{ key.display }}
+      </button>
+    </div>
+  </div>
+</div>

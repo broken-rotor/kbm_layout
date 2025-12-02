@@ -1,0 +1,37 @@
+<div class="app-container">
+  <header class="app-header">
+    <h1>🎮 {{ title }}</h1>
+    
+    <div class="device-tabs">
+      <button 
+        class="{{ getDeviceTabClass(DeviceType.KEYBOARD) }}"
+        (click)="onDeviceSelect(DeviceType.KEYBOARD)">
+        📱 Keyboard
+      </button>
+      <button 
+        class="{{ getDeviceTabClass(DeviceType.MOUSE) }}"
+        (click)="onDeviceSelect(DeviceType.MOUSE)">
+        🖱️ Mouse
+      </button>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <section class="device-layout-section">
+      <div class="device-layout-container">
+        <app-keyboard-layout 
+          *ngIf="selectedDevice === DeviceType.KEYBOARD">
+        </app-keyboard-layout>
+        
+        <app-mouse-layout 
+          *ngIf="selectedDevice === DeviceType.MOUSE">
+        </app-mouse-layout>
+      </div>
+    </section>
+
+    <section class="actions-section">
+      <app-actions-list></app-actions-list>
+    </section>
+  </main>
+</div>
+
