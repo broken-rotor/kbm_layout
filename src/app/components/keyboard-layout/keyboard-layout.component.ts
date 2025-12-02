@@ -18,7 +18,7 @@ export class KeyboardLayoutComponent implements OnInit, OnDestroy {
   selectedAction: Action | null = null;
   keyMappings = new Map<string, KeyMapping>();
 
-  // US ANSI Keyboard Layout (matching user's keyboard)
+  // UK Keyboard Layout (ISO Layout)
   keyboardRows: KeyboardKey[][] = [
     // Function row
     [
@@ -53,7 +53,7 @@ export class KeyboardLayoutComponent implements OnInit, OnDestroy {
       { code: 'Equal', display: '=', row: 1, col: 12 },
       { code: 'Backspace', display: 'Backspace', row: 1, col: 13, width: 2, className: 'key-wide' }
     ],
-    // QWERTY row
+    // QWERTY row (with ISO Enter spanning to next row)
     [
       { code: 'Tab', display: 'Tab', row: 2, col: 0, width: 1.5, className: 'key-wide' },
       { code: 'KeyQ', display: 'Q', row: 2, col: 1 },
@@ -68,9 +68,9 @@ export class KeyboardLayoutComponent implements OnInit, OnDestroy {
       { code: 'KeyP', display: 'P', row: 2, col: 10 },
       { code: 'BracketLeft', display: '[', row: 2, col: 11 },
       { code: 'BracketRight', display: ']', row: 2, col: 12 },
-      { code: 'Backslash', display: '\\', row: 2, col: 13, width: 1.5, className: 'key-wide' }
+      { code: 'Enter', display: 'Enter', row: 2, col: 13, width: 1.25, className: 'key-enter-iso' }
     ],
-    // ASDF row
+    // ASDF row (with ISO Enter continuation and UK hash key)
     [
       { code: 'CapsLock', display: 'Caps', row: 3, col: 0, width: 1.75, className: 'key-wide' },
       { code: 'KeyA', display: 'A', row: 3, col: 1 },
@@ -84,22 +84,23 @@ export class KeyboardLayoutComponent implements OnInit, OnDestroy {
       { code: 'KeyL', display: 'L', row: 3, col: 9 },
       { code: 'Semicolon', display: ';', row: 3, col: 10 },
       { code: 'Quote', display: "'", row: 3, col: 11 },
-      { code: 'Enter', display: 'Enter', row: 3, col: 12, width: 2.25, className: 'key-wide key-enter' }
+      { code: 'Backslash', display: '#', row: 3, col: 12 }
     ],
-    // ZXCV row
+    // ZXCV row (with UK backslash key)
     [
-      { code: 'ShiftLeft', display: 'Shift', row: 4, col: 0, width: 2.25, className: 'key-wide' },
-      { code: 'KeyZ', display: 'Z', row: 4, col: 1 },
-      { code: 'KeyX', display: 'X', row: 4, col: 2 },
-      { code: 'KeyC', display: 'C', row: 4, col: 3 },
-      { code: 'KeyV', display: 'V', row: 4, col: 4 },
-      { code: 'KeyB', display: 'B', row: 4, col: 5 },
-      { code: 'KeyN', display: 'N', row: 4, col: 6 },
-      { code: 'KeyM', display: 'M', row: 4, col: 7 },
-      { code: 'Comma', display: ',', row: 4, col: 8 },
-      { code: 'Period', display: '.', row: 4, col: 9 },
-      { code: 'Slash', display: '/', row: 4, col: 10 },
-      { code: 'ShiftRight', display: 'Shift', row: 4, col: 11, width: 2.75, className: 'key-wide' }
+      { code: 'ShiftLeft', display: 'Shift', row: 4, col: 0, width: 1.25, className: 'key-wide' },
+      { code: 'IntlBackslash', display: '\\', row: 4, col: 1 },
+      { code: 'KeyZ', display: 'Z', row: 4, col: 2 },
+      { code: 'KeyX', display: 'X', row: 4, col: 3 },
+      { code: 'KeyC', display: 'C', row: 4, col: 4 },
+      { code: 'KeyV', display: 'V', row: 4, col: 5 },
+      { code: 'KeyB', display: 'B', row: 4, col: 6 },
+      { code: 'KeyN', display: 'N', row: 4, col: 7 },
+      { code: 'KeyM', display: 'M', row: 4, col: 8 },
+      { code: 'Comma', display: ',', row: 4, col: 9 },
+      { code: 'Period', display: '.', row: 4, col: 10 },
+      { code: 'Slash', display: '/', row: 4, col: 11 },
+      { code: 'ShiftRight', display: 'Shift', row: 4, col: 12, width: 2.75, className: 'key-wide' }
     ],
     // Bottom row
     [
@@ -107,7 +108,7 @@ export class KeyboardLayoutComponent implements OnInit, OnDestroy {
       { code: 'MetaLeft', display: 'Win', row: 5, col: 1, width: 1.25, className: 'key-wide' },
       { code: 'AltLeft', display: 'Alt', row: 5, col: 2, width: 1.25, className: 'key-wide' },
       { code: 'Space', display: 'Space', row: 5, col: 3, width: 6.25, className: 'key-space' },
-      { code: 'AltRight', display: 'Alt', row: 5, col: 4, width: 1.25, className: 'key-wide' },
+      { code: 'AltRight', display: 'AltGr', row: 5, col: 4, width: 1.25, className: 'key-wide' },
       { code: 'MetaRight', display: 'Win', row: 5, col: 5, width: 1.25, className: 'key-wide' },
       { code: 'ContextMenu', display: 'Menu', row: 5, col: 6, width: 1.25, className: 'key-wide' },
       { code: 'ControlRight', display: 'Ctrl', row: 5, col: 7, width: 1.25, className: 'key-wide' }
