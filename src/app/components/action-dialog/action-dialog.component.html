@@ -1,5 +1,5 @@
-<div class="dialog-overlay" (click)="onCancel()">
-  <div class="dialog-content" (click)="$event.stopPropagation()">
+<div class="dialog-overlay" (click)="onCancel()" (keydown.escape)="onCancel()" tabindex="-1">
+  <div class="dialog-content" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()" role="dialog" aria-modal="true" tabindex="-1">
     <div class="dialog-header">
       <h3>{{ dialogTitle }}</h3>
       <button class="close-btn" (click)="onCancel()">×</button>
@@ -18,17 +18,18 @@
       </div>
       
       <div class="form-group">
-        <label>Color</label>
+        <div class="form-label">Color</div>
         <div class="color-section">
           <div class="color-palette">
-            <button
-              *ngFor="let color of colorPalette"
-              class="color-option"
-              [class.selected]="actionColor === color"
-              [style.background-color]="color"
-              (click)="onColorSelect(color)"
-              type="button">
-            </button>
+            @for (color of colorPalette; track color) {
+              <button
+                class="color-option"
+                [class.selected]="actionColor === color"
+                [style.background-color]="color"
+                (click)="onColorSelect(color)"
+                type="button">
+              </button>
+            }
           </div>
           
           <div class="custom-color">
@@ -44,7 +45,7 @@
       </div>
       
       <div class="preview-section">
-        <label>Preview</label>
+        <div class="form-label">Preview</div>
         <div class="action-preview">
           <div class="preview-color" 
                [style.background-color]="actionColor"

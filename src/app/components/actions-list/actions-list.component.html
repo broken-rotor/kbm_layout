@@ -4,10 +4,14 @@
   </div>
   
   <div class="actions-list">
-    <div 
-      *ngFor="let action of actions" 
-      class="{{ getActionClasses(action) }}"
-      (click)="onActionClick(action)">
+    @for (action of actions; track action.id) {
+      <div
+        class="{{ getActionClasses(action) }}"
+        (click)="onActionClick(action)"
+        (keydown.enter)="onActionClick(action)"
+        (keydown.space)="onActionClick(action)"
+        tabindex="0"
+        role="button">
       
       <div class="action-color" 
            [style.background-color]="action.color"
@@ -41,8 +45,9 @@
           ✏️
         </button>
       </div>
-    </div>
-    
+      </div>
+    }
+
     <div class="add-action-container">
       <button class="add-action-btn" (click)="onAddAction()">
         ➕ Add New Action
@@ -56,9 +61,10 @@
 </div>
 
 <!-- Action Dialog -->
-<app-action-dialog 
-  *ngIf="showActionDialog"
-  [action]="editingAction"
-  (save)="onDialogSave($event)"
-  (cancel)="onDialogCancel()">
-</app-action-dialog>
+@if (showActionDialog) {
+  <app-action-dialog
+    [action]="editingAction"
+    (save)="onDialogSave($event)"
+    (cancelled)="onDialogCancel()">
+  </app-action-dialog>
+}

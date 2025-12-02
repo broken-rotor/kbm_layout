@@ -13,7 +13,7 @@ import { Action } from '../../models/interfaces';
 export class ActionDialogComponent implements OnInit {
   @Input() action: Action | null = null;
   @Output() save = new EventEmitter<{ name: string; color: string }>();
-  @Output() cancel = new EventEmitter<void>();
+  @Output() cancelled = new EventEmitter<void>();
 
   actionName = '';
   actionColor = '#3498db';
@@ -43,7 +43,7 @@ export class ActionDialogComponent implements OnInit {
   }
 
   onCancel(): void {
-    this.cancel.emit();
+    this.cancelled.emit();
   }
 
   onColorSelect(color: string): void {

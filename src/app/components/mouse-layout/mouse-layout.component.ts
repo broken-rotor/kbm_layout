@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 import { ActionsService } from '../../services/actions.service';
@@ -12,10 +12,11 @@ import { MouseButton, DeviceType, Action, KeyMapping } from '../../models/interf
   styleUrls: ['./mouse-layout.component.css']
 })
 export class MouseLayoutComponent implements OnInit, OnDestroy {
+  private actionsService = inject(ActionsService);
   private destroy$ = new Subject<void>();
-  
+
   selectedAction: Action | null = null;
-  keyMappings: Map<string, KeyMapping> = new Map();
+  keyMappings = new Map<string, KeyMapping>();
 
   // Mouse button layout
   mouseButtons: MouseButton[] = [
@@ -27,8 +28,6 @@ export class MouseLayoutComponent implements OnInit, OnDestroy {
     { code: 'MouseBack', display: 'Back', x: 5, y: 100, width: 50, height: 30, className: 'mouse-side' },
     { code: 'MouseForward', display: 'Forward', x: 185, y: 100, width: 50, height: 30, className: 'mouse-side' }
   ];
-
-  constructor(private actionsService: ActionsService) {}
 
   ngOnInit(): void {
     this.actionsService.selectedAction$
@@ -59,9 +58,9 @@ export class MouseLayoutComponent implements OnInit, OnDestroy {
     }
   }
 
-  getButtonStyle(button: MouseButton): any {
+  getButtonStyle(button: MouseButton): Record<string, string> {
     const mapping = this.keyMappings.get(button.code);
-    const baseStyle: any = {
+    const baseStyle: Record<string, string> = {
       left: button.x + 'px',
       top: button.y + 'px',
       width: button.width + 'px',

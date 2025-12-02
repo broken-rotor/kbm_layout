@@ -1,15 +1,18 @@
 <div class="keyboard-container">
   <div class="keyboard-layout">
-    <div class="keyboard-row" *ngFor="let row of keyboardRows; let rowIndex = index">
-      <button
-        *ngFor="let key of row"
-        class="{{ getKeyClasses(key) }}"
-        [ngStyle]="getKeyStyle(key)"
-        (click)="onKeyClick(key)"
-        [title]="key.display"
-        type="button">
-        {{ key.display }}
-      </button>
-    </div>
+    @for (row of keyboardRows; track $index) {
+      <div class="keyboard-row">
+        @for (key of row; track key.code) {
+          <button
+            class="{{ getKeyClasses(key) }}"
+            [ngStyle]="getKeyStyle(key)"
+            (click)="onKeyClick(key)"
+            [title]="key.display"
+            type="button">
+            {{ key.display }}
+          </button>
+        }
+      </div>
+    }
   </div>
 </div>
