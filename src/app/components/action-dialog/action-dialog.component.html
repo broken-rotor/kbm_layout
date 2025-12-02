@@ -18,28 +18,21 @@
       </div>
       
       <div class="form-group">
-        <div class="form-label">Color</div>
-        <div class="color-section">
-          <div class="color-palette">
-            @for (color of colorPalette; track color) {
+        <div class="form-label">Color Group</div>
+        <div class="color-groups-section">
+          <div class="color-groups-grid">
+            @for (group of colorGroups; track group.id) {
               <button
-                class="color-option"
-                [class.selected]="actionColor === color"
-                [style.background-color]="color"
-                (click)="onColorSelect(color)"
-                type="button">
+                class="color-group-option"
+                [class.selected]="selectedColorGroupId === group.id"
+                [style.background-color]="group.color"
+                [style.color]="getContrastColor(group.color)"
+                (click)="onColorGroupSelect(group.id)"
+                type="button"
+                [title]="group.name">
+                {{ group.name }}
               </button>
             }
-          </div>
-          
-          <div class="custom-color">
-            <label for="customColor">Custom Color:</label>
-            <input 
-              id="customColor"
-              type="color" 
-              [value]="actionColor"
-              (change)="onCustomColorChange($event)"
-              class="color-picker">
           </div>
         </div>
       </div>
@@ -48,11 +41,12 @@
         <div class="form-label">Preview</div>
         <div class="action-preview">
           <div class="preview-color" 
-               [style.background-color]="actionColor"
-               [style.color]="getContrastColor(actionColor)">
+               [style.background-color]="getSelectedColorGroup()?.color || '#cccccc'"
+               [style.color]="getContrastColor(getSelectedColorGroup()?.color || '#cccccc')">
             ●
           </div>
           <span class="preview-name">{{ actionName || 'Action Name' }}</span>
+          <span class="preview-group">{{ getSelectedColorGroup()?.name || 'No Group Selected' }}</span>
         </div>
       </div>
     </div>
@@ -64,7 +58,7 @@
       <button 
         class="btn btn-primary" 
         (click)="onSave()"
-        [disabled]="!actionName.trim()">
+        [disabled]="!actionName.trim() || !selectedColorGroupId">
         {{ isEditing ? 'Update' : 'Create' }}
       </button>
     </div>

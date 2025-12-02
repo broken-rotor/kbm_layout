@@ -2,12 +2,14 @@ import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Action, KeyMapping, DeviceType } from '../models/interfaces';
 import { StorageService } from './storage.service';
+import { ColorGroupsService } from './color-groups.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ActionsService {
   private storageService = inject(StorageService);
+  private colorGroupsService = inject(ColorGroupsService);
 
   private actionsSubject = new BehaviorSubject<Action[]>([]);
   private selectedActionSubject = new BehaviorSubject<Action | null>(null);
@@ -37,11 +39,11 @@ export class ActionsService {
   }
 
   // Actions management
-  addAction(name: string, color: string): Action {
+  addAction(name: string, colorGroupId: string): Action {
     const newAction: Action = {
       id: this.generateId(),
       name,
-      color
+      colorGroupId
     };
 
     const currentActions = this.actionsSubject.value;
@@ -163,6 +165,11 @@ export class ActionsService {
   // Utility methods
   getActionById(actionId: string): Action | undefined {
     return this.actionsSubject.value.find(action => action.id === actionId);
+  }
+
+  getActionColor(action: Action): string {
+    const colorGroup = this.colorGroupsService.getColorGroupById(action.colorGroupId);
+    return colorGroup?.color || '#cccccc'; // Default gray if color group not found
   }
 
   getMappingForKey(keyCode: string): KeyMapping | undefined {

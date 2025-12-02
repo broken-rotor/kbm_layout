@@ -70,9 +70,10 @@ export class MouseLayoutComponent implements OnInit, OnDestroy {
     if (mapping && mapping.actionId) {
       const action = this.actionsService.getActionById(mapping.actionId);
       if (action) {
-        baseStyle['background-color'] = action.color;
-        baseStyle['color'] = this.getContrastColor(action.color);
-        baseStyle['border-color'] = action.color;
+        const actionColor = this.actionsService.getActionColor(action);
+        baseStyle['background-color'] = actionColor;
+        baseStyle['color'] = this.getContrastColor(actionColor);
+        baseStyle['border-color'] = actionColor;
       }
     }
 

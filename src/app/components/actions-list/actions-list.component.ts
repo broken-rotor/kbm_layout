@@ -73,16 +73,16 @@ export class ActionsListComponent implements OnInit, OnDestroy {
     this.actionsService.clearActionMapping(action.id);
   }
 
-  onDialogSave(actionData: { name: string; color: string }): void {
+  onDialogSave(actionData: { name: string; colorGroupId: string }): void {
     if (this.editingAction) {
       // Update existing action
       this.actionsService.updateAction(this.editingAction.id, {
         name: actionData.name,
-        color: actionData.color
+        colorGroupId: actionData.colorGroupId
       });
     } else {
       // Create new action
-      this.actionsService.addAction(actionData.name, actionData.color);
+      this.actionsService.addAction(actionData.name, actionData.colorGroupId);
     }
     this.closeDialog();
   }
@@ -111,6 +111,10 @@ export class ActionsListComponent implements OnInit, OnDestroy {
       return action.keyMapping.displayName;
     }
     return 'Not Mapped';
+  }
+
+  getActionColor(action: Action): string {
+    return this.actionsService.getActionColor(action);
   }
 
   getContrastColor(hexColor: string): string {

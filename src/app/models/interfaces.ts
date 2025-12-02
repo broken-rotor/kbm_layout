@@ -1,7 +1,13 @@
-export interface Action {
+export interface ColorGroup {
   id: string;
   name: string;
   color: string;
+}
+
+export interface Action {
+  id: string;
+  name: string;
+  colorGroupId: string;
   keyMapping?: KeyMapping;
 }
 
