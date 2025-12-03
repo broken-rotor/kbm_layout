@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, fromEvent, merge } from 'rxjs';
+import { BehaviorSubject, fromEvent } from 'rxjs';
 import { ModifierState, ModifierSet } from '../models/interfaces';
 
 @Injectable({

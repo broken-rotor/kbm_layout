@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Subject, takeUntil, combineLatest } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { ActionsService } from '../../services/actions.service';
 import { ModifierStateService } from '../../services/modifier-state.service';
 import { KeyboardKey, DeviceType, Action, KeyMapping, ModifierKeyMapping, ModifierSet } from '../../models/interfaces';
