@@ -19,6 +19,37 @@ export interface KeyMapping {
   actionId?: string;
 }
 
+export enum ModifierSet {
+  NONE = 'none',
+  CTRL = 'ctrl',
+  ALT = 'alt',
+  SHIFT = 'shift',
+  CTRL_ALT = 'ctrl+alt',
+  CTRL_SHIFT = 'ctrl+shift',
+  ALT_SHIFT = 'alt+shift',
+  CTRL_ALT_SHIFT = 'ctrl+alt+shift'
+}
+
+export interface ModifierKeyMapping {
+  keyCode: string;
+  deviceType: DeviceType;
+  displayName: string;
+  modifierSet: ModifierSet;
+  actionId?: string;
+}
+
+export interface ModifierState {
+  ctrl: boolean;
+  alt: boolean;
+  shift: boolean;
+  ctrlLeft: boolean;
+  ctrlRight: boolean;
+  altLeft: boolean;
+  altRight: boolean;
+  shiftLeft: boolean;
+  shiftRight: boolean;
+}
+
 export enum DeviceType {
   KEYBOARD = 'keyboard',
   MOUSE = 'mouse'

@@ -1,4 +1,10 @@
 <div class="mouse-container">
+  @if (currentModifierSet !== 'none') {
+    <div class="modifier-indicator">
+      <span class="modifier-label">Active Modifier Set:</span>
+      <span class="modifier-value">{{ currentModifierSet }}</span>
+    </div>
+  }
   <div class="mouse-layout">
     <div class="mouse-body">
       @for (button of mouseButtons; track button.code) {
@@ -6,7 +12,7 @@
           class="{{ getButtonClasses(button) }}"
           [ngStyle]="getButtonStyle(button)"
           (click)="onButtonClick(button)"
-          [title]="button.display"
+          [title]="getButtonTitle(button)"
           type="button">
           <span class="button-label">{{ button.display }}</span>
         </button>

@@ -1,4 +1,10 @@
 <div class="keyboard-container">
+  @if (currentModifierSet !== 'none') {
+    <div class="modifier-indicator">
+      <span class="modifier-label">Active Modifier Set:</span>
+      <span class="modifier-value">{{ currentModifierSet }}</span>
+    </div>
+  }
   <div class="keyboard-layout">
     @for (row of keyboardRows; track $index) {
       <div class="keyboard-row">
@@ -11,7 +17,7 @@
               class="{{ getKeyClasses(key) }}"
               [ngStyle]="getKeyStyle(key)"
               (click)="onKeyClick(key)"
-              [title]="key.display"
+              [title]="getKeyTitle(key)"
               type="button">
               {{ key.display }}
             </button>

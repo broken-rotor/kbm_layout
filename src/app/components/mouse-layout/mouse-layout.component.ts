@@ -2,7 +2,8 @@ import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 import { ActionsService } from '../../services/actions.service';
-import { MouseButton, DeviceType, Action, KeyMapping } from '../../models/interfaces';
+import { ModifierStateService } from '../../services/modifier-state.service';
+import { MouseButton, DeviceType, Action, KeyMapping, ModifierKeyMapping, ModifierSet } from '../../models/interfaces';
 
 @Component({
   selector: 'app-mouse-layout',
@@ -13,10 +14,13 @@ import { MouseButton, DeviceType, Action, KeyMapping } from '../../models/interf
 })
 export class MouseLayoutComponent implements OnInit, OnDestroy {
   private actionsService = inject(ActionsService);
+  private modifierStateService = inject(ModifierStateService);
   private destroy$ = new Subject<void>();
 
   selectedAction: Action | null = null;
   keyMappings = new Map<string, KeyMapping>();
+  modifierMappings = new Map<string, ModifierKeyMapping>();
+  currentModifierSet: ModifierSet = ModifierSet.NONE;
 
   // Mouse button layout
   mouseButtons: MouseButton[] = [
@@ -41,6 +45,18 @@ export class MouseLayoutComponent implements OnInit, OnDestroy {
       .subscribe(mappings => {
         this.keyMappings = mappings;
       });
+
+    this.actionsService.modifierMappings$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(mappings => {
+        this.modifierMappings = mappings;
+      });
+
+    this.modifierStateService.currentModifierSet$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(modifierSet => {
+        this.currentModifierSet = modifierSet;
+      });
   }
 
   ngOnDestroy(): void {
@@ -50,16 +66,24 @@ export class MouseLayoutComponent implements OnInit, OnDestroy {
 
   onButtonClick(button: MouseButton): void {
     if (this.selectedAction) {
-      // Map the button to the selected action
-      this.actionsService.mapKeyToAction(button.code, DeviceType.MOUSE, button.display);
+      // Use modifier-aware mapping if modifiers are pressed, otherwise use regular mapping
+      if (this.currentModifierSet !== ModifierSet.NONE) {
+        this.actionsService.mapKeyToActionWithModifier(button.code, DeviceType.MOUSE, button.display);
+      } else {
+        this.actionsService.mapKeyToAction(button.code, DeviceType.MOUSE, button.display);
+      }
     } else {
       // If no action selected, clear the mapping for this button
-      this.actionsService.clearKeyMapping(button.code);
+      if (this.currentModifierSet !== ModifierSet.NONE) {
+        this.actionsService.clearModifierKeyMapping(button.code);
+      } else {
+        this.actionsService.clearKeyMapping(button.code);
+      }
     }
   }
 
   getButtonStyle(button: MouseButton): Record<string, string> {
-    const mapping = this.keyMappings.get(button.code);
+    const mapping = this.actionsService.getCurrentMappingForKey(button.code);
     const baseStyle: Record<string, string> = {
       left: button.x + 'px',
       top: button.y + 'px',
@@ -97,6 +121,18 @@ export class MouseLayoutComponent implements OnInit, OnDestroy {
     }
 
     return classes;
+  }
+
+  getButtonTitle(button: MouseButton): string {
+    const mapping = this.actionsService.getCurrentMappingForKey(button.code);
+    if (mapping && mapping.actionId) {
+      const action = this.actionsService.getActionById(mapping.actionId);
+      if (action) {
+        const modifierText = this.currentModifierSet !== ModifierSet.NONE ? ` (${this.currentModifierSet})` : '';
+        return `${button.display} - ${action.name}${modifierText}`;
+      }
+    }
+    return button.display;
   }
 
   private getContrastColor(hexColor: string): string {

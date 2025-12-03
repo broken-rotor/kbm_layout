@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Action, KeyMapping, ColorGroup } from '../models/interfaces';
+import { Action, KeyMapping, ColorGroup, ModifierKeyMapping } from '../models/interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -7,9 +7,10 @@ import { Action, KeyMapping, ColorGroup } from '../models/interfaces';
 export class StorageService {
   private readonly ACTIONS_KEY = 'kbm_layout_actions';
   private readonly MAPPINGS_KEY = 'kbm_layout_mappings';
+  private readonly MODIFIER_MAPPINGS_KEY = 'kbm_layout_modifier_mappings';
   private readonly COLOR_GROUPS_KEY = 'kbm_layout_color_groups';
   private readonly STORAGE_VERSION_KEY = 'kbm_layout_storage_version';
-  private readonly CURRENT_STORAGE_VERSION = 1;
+  private readonly CURRENT_STORAGE_VERSION = 2;
 
   // Actions storage
   saveActions(actions: Action[]): void {
@@ -50,6 +51,30 @@ export class StorageService {
       return new Map();
     } catch (error) {
       console.error('Failed to load mappings from localStorage:', error);
+      return new Map();
+    }
+  }
+
+  // Modifier key mappings storage
+  saveModifierMappings(mappings: Map<string, ModifierKeyMapping>): void {
+    try {
+      const mappingsArray = Array.from(mappings.entries());
+      localStorage.setItem(this.MODIFIER_MAPPINGS_KEY, JSON.stringify(mappingsArray));
+    } catch (error) {
+      console.error('Failed to save modifier mappings to localStorage:', error);
+    }
+  }
+
+  loadModifierMappings(): Map<string, ModifierKeyMapping> {
+    try {
+      const stored = localStorage.getItem(this.MODIFIER_MAPPINGS_KEY);
+      if (stored) {
+        const mappingsArray: [string, ModifierKeyMapping][] = JSON.parse(stored);
+        return new Map(mappingsArray);
+      }
+      return new Map();
+    } catch (error) {
+      console.error('Failed to load modifier mappings from localStorage:', error);
       return new Map();
     }
   }
