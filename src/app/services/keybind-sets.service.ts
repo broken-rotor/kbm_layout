@@ -136,6 +136,13 @@ export class KeybindSetsService {
   }
 
   // Update current keybind set data
+  updateCurrentSet(updates: Partial<KeybindSet>): void {
+    const selectedSet = this.selectedKeybindSetSubject.value;
+    if (!selectedSet) return;
+
+    this.updateKeybindSet(selectedSet.id, updates);
+  }
+
   updateCurrentSetActions(actions: Action[]): void {
     const selectedSet = this.selectedKeybindSetSubject.value;
     if (!selectedSet) return;
@@ -159,18 +166,19 @@ export class KeybindSetsService {
 
   private updateKeybindSet(setId: string, updates: Partial<KeybindSet>): void {
     const currentSets = this.keybindSetsSubject.value;
-    const updatedSets = currentSets.map(set => 
+    const updatedSets = currentSets.map(set =>
       set.id === setId ? { ...set, ...updates } : set
     );
-    
+
     this.keybindSetsSubject.next(updatedSets);
-    
+
     // Update selected set if it was modified
     const selectedSet = this.selectedKeybindSetSubject.value;
     if (selectedSet && selectedSet.id === setId) {
-      this.selectedKeybindSetSubject.next(updatedSets.find(s => s.id === setId) || null);
+      const updatedSelectedSet = updatedSets.find(s => s.id === setId) || null;
+      this.selectedKeybindSetSubject.next(updatedSelectedSet);
     }
-    
+
     this.saveKeybindSets();
   }
 

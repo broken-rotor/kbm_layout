@@ -35,7 +35,7 @@ export class ActionsService {
       if (keybindSet) {
         this.actionsSubject.next(keybindSet.actions);
         this.keyMappingsSubject.next(keybindSet.keyMappings);
-        
+
         // Update color groups service with the keybind set's color groups
         this.colorGroupsService.setColorGroups(keybindSet.colorGroups);
       } else {
@@ -46,13 +46,16 @@ export class ActionsService {
   }
 
   private saveData(): void {
-    // Update the current keybind set with the latest actions and mappings
-    this.keybindSetsService.updateCurrentSetActions(this.actionsSubject.value);
-    this.keybindSetsService.updateCurrentSetKeyMappings(this.keyMappingsSubject.value);
-    
-    // Also save the current color groups to the keybind set
-    // We need to access the private colorGroupsSubject to get the current value
-    // For now, we'll let the ColorGroupsService handle its own updates to keybind sets
+    // Update the current keybind set with the latest actions and mappings in one call
+    // to avoid race conditions from the subscription resetting values
+    const currentActions = this.actionsSubject.value;
+    const currentKeyMappings = this.keyMappingsSubject.value;
+
+    this.keybindSetsService.updateCurrentSet({
+      actions: currentActions,
+      keyMappings: currentKeyMappings,
+      lastModified: new Date()
+    });
   }
 
   // Actions management
@@ -74,11 +77,21 @@ export class ActionsService {
 
   updateAction(actionId: string, updates: Partial<Action>): void {
     const currentActions = this.actionsSubject.value;
-    const updatedActions = currentActions.map(action => 
+    const updatedActions = currentActions.map(action =>
       action.id === actionId ? { ...action, ...updates } : action
     );
-    
+
     this.actionsSubject.next(updatedActions);
+
+    // Update selected action if it was modified
+    const selectedAction = this.selectedActionSubject.value;
+    if (selectedAction && selectedAction.id === actionId) {
+      const updatedSelectedAction = updatedActions.find(a => a.id === actionId);
+      if (updatedSelectedAction) {
+        this.selectedActionSubject.next(updatedSelectedAction);
+      }
+    }
+
     this.saveData();
   }
 
@@ -182,6 +195,8 @@ export class ActionsService {
     const actionKeyMappings = selectedAction.keyMappings || new Map<ModifierSet, KeyMapping>();
     actionKeyMappings.set(targetModifierSet, newMapping);
     this.updateAction(selectedAction.id, { keyMappings: actionKeyMappings });
+
+    this.saveData();
   }
 
   clearModifierKeyMapping(keyCode: string, modifierSet?: ModifierSet): void {

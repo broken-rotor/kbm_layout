@@ -1,11 +1,14 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ColorGroup } from '../models/interfaces';
+import { KeybindSetsService } from './keybind-sets.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ColorGroupsService {
+  private keybindSetsService = inject(KeybindSetsService);
+
   private colorGroupsSubject = new BehaviorSubject<ColorGroup[]>([]);
   public colorGroups$ = this.colorGroupsSubject.asObservable();
 
@@ -49,9 +52,10 @@ export class ColorGroupsService {
   private saveColorGroups(): void {
     try {
       const colorGroups = this.colorGroupsSubject.value;
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(colorGroups));
+      // Save to the current keybind set instead of localStorage
+      this.keybindSetsService.updateCurrentSetColorGroups(colorGroups);
     } catch (error) {
-      console.error('Failed to save color groups to localStorage:', error);
+      console.error('Failed to save color groups:', error);
     }
   }
 
@@ -80,10 +84,10 @@ export class ColorGroupsService {
 
   updateColorGroup(id: string, updates: Partial<Omit<ColorGroup, 'id'>>): void {
     const currentGroups = this.colorGroupsSubject.value;
-    const updatedGroups = currentGroups.map(group => 
+    const updatedGroups = currentGroups.map(group =>
       group.id === id ? { ...group, ...updates } : group
     );
-    
+
     this.colorGroupsSubject.next(updatedGroups);
     this.saveColorGroups();
   }

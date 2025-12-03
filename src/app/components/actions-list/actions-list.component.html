@@ -7,16 +7,23 @@
   @if (colorGroupsWithActions.length > 0) {
     <div class="color-tabs">
       @for (groupInfo of colorGroupsWithActions; track groupInfo.group.id) {
-        <button 
+        <button
           class="color-tab {{ selectedColorGroupId === groupInfo.group.id ? 'active' : '' }}"
           (click)="onColorTabClick(groupInfo.group.id)"
           [style.background-color]="groupInfo.group.color"
           [style.color]="getContrastColor(groupInfo.group.color)">
           <span class="tab-emoji">{{ getColorEmoji(groupInfo.group.color) }}</span>
-          <span class="tab-name">{{ getColorName(groupInfo.group.color) }}</span>
+          <span class="tab-name">{{ groupInfo.group.name }}</span>
           <span class="tab-count">({{ groupInfo.count }})</span>
         </button>
       }
+      <button
+        class="color-tab manage-groups-btn"
+        (click)="toggleGroupManager()"
+        title="Manage Color Groups">
+        <span class="tab-emoji">⚙️</span>
+        <span class="tab-name">Manage Groups</span>
+      </button>
     </div>
   }
   
@@ -84,4 +91,17 @@
     (save)="onDialogSave($event)"
     (cancelled)="onDialogCancel()">
   </app-action-dialog>
+}
+
+<!-- Color Groups Management Dialog -->
+@if (showGroupManager) {
+  <div class="dialog-overlay" (click)="closeGroupManager()" (keydown.escape)="closeGroupManager()" tabindex="-1">
+    <div class="dialog-content" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()" role="dialog" aria-modal="true" tabindex="-1">
+      <div class="dialog-header">
+        <h3>Manage Color Groups</h3>
+        <button class="close-btn" (click)="closeGroupManager()" title="Close">✕</button>
+      </div>
+      <app-color-groups-management></app-color-groups-management>
+    </div>
+  </div>
 }

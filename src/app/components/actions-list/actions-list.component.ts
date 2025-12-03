@@ -5,6 +5,7 @@ import { ActionsService } from '../../services/actions.service';
 import { ColorGroupsService } from '../../services/color-groups.service';
 import { Action, ColorGroup } from '../../models/interfaces';
 import { ActionDialogComponent } from '../action-dialog/action-dialog.component';
+import { ColorGroupsManagementComponent } from '../color-groups-management/color-groups-management.component';
 
 interface ColorGroupInfo {
   group: ColorGroup;
@@ -14,7 +15,7 @@ interface ColorGroupInfo {
 @Component({
   selector: 'app-actions-list',
   standalone: true,
-  imports: [CommonModule, ActionDialogComponent],
+  imports: [CommonModule, ActionDialogComponent, ColorGroupsManagementComponent],
   templateUrl: './actions-list.component.html',
   styleUrls: ['./actions-list.component.css']
 })
@@ -28,7 +29,8 @@ export class ActionsListComponent implements OnInit, OnDestroy {
   selectedAction: Action | null = null;
   showActionDialog = false;
   editingAction: Action | null = null;
-  
+  showGroupManager = false;
+
   colorGroups: ColorGroup[] = [];
   colorGroupsWithActions: ColorGroupInfo[] = [];
   selectedColorGroupId: string | null = null;
@@ -214,6 +216,14 @@ export class ActionsListComponent implements OnInit, OnDestroy {
 
   private getFirstAvailableColorGroupId(): string {
     return this.colorGroups.length > 0 ? this.colorGroups[0].id : '';
+  }
+
+  toggleGroupManager(): void {
+    this.showGroupManager = !this.showGroupManager;
+  }
+
+  closeGroupManager(): void {
+    this.showGroupManager = false;
   }
 
   getColorEmoji(color: string): string {
