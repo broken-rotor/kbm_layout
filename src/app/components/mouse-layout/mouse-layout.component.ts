@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 import { ActionsService } from '../../services/actions.service';
 import { ModifierStateService } from '../../services/modifier-state.service';
-import { MouseButton, DeviceType, Action, KeyMapping, ModifierKeyMapping, ModifierSet } from '../../models/interfaces';
+import { MouseButton, DeviceType, Action, KeyMapping, ModifierSet } from '../../models/interfaces';
 
 @Component({
   selector: 'app-mouse-layout',
@@ -19,7 +19,6 @@ export class MouseLayoutComponent implements OnInit, OnDestroy {
 
   selectedAction: Action | null = null;
   keyMappings = new Map<string, KeyMapping>();
-  modifierMappings = new Map<string, ModifierKeyMapping>();
   currentModifierSet: ModifierSet = ModifierSet.NONE;
 
   // Mouse button layout
@@ -44,12 +43,6 @@ export class MouseLayoutComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(mappings => {
         this.keyMappings = mappings;
-      });
-
-    this.actionsService.modifierMappings$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(mappings => {
-        this.modifierMappings = mappings;
       });
 
     this.modifierStateService.currentModifierSet$
@@ -106,12 +99,12 @@ export class MouseLayoutComponent implements OnInit, OnDestroy {
 
   getButtonClasses(button: MouseButton): string {
     let classes = 'mouse-button';
-    
+
     if (button.className) {
       classes += ` ${button.className}`;
     }
 
-    const mapping = this.keyMappings.get(button.code);
+    const mapping = this.actionsService.getCurrentMappingForKey(button.code);
     if (mapping && mapping.actionId) {
       classes += ' button-mapped';
     }

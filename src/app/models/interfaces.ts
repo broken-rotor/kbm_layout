@@ -9,14 +9,7 @@ export interface Action {
   id: string;
   name: string;
   colorGroupId: string;
-  keyMapping?: KeyMapping;
-}
-
-export interface KeyMapping {
-  keyCode: string;
-  deviceType: DeviceType;
-  displayName: string;
-  actionId?: string;
+  keyMappings?: Map<ModifierSet, KeyMapping>;
 }
 
 export enum ModifierSet {
@@ -30,7 +23,7 @@ export enum ModifierSet {
   CTRL_ALT_SHIFT = 'ctrl+alt+shift'
 }
 
-export interface ModifierKeyMapping {
+export interface KeyMapping {
   keyCode: string;
   deviceType: DeviceType;
   displayName: string;
@@ -73,11 +66,4 @@ export interface MouseButton {
   width: number;
   height: number;
   className?: string;
-}
-
-export interface AppState {
-  selectedDevice: DeviceType;
-  selectedAction: Action | null;
-  actions: Action[];
-  keyMappings: Map<string, KeyMapping>;
 }

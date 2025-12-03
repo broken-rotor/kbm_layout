@@ -1,10 +1,4 @@
 <div class="keyboard-container">
-  @if (currentModifierSet !== 'none') {
-    <div class="modifier-indicator">
-      <span class="modifier-label">Active Modifier Set:</span>
-      <span class="modifier-value">{{ currentModifierSet }}</span>
-    </div>
-  }
   <div class="keyboard-layout">
     @for (row of keyboardRows; track $index) {
       <div class="keyboard-row">
@@ -26,4 +20,10 @@
       </div>
     }
   </div>
+  @if (currentModifierSet !== 'none') {
+    <div class="modifier-indicator">
+      <span class="modifier-label">Active Modifier Set:</span>
+      <span class="modifier-value">{{ currentModifierSet }}</span>
+    </div>
+  }
 </div>

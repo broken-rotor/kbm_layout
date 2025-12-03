@@ -25,10 +25,10 @@
       </div>
       
       <div class="action-controls">
-        <button 
-          class="control-btn clear-btn" 
+        <button
+          class="control-btn clear-btn"
           (click)="onClearMapping(action, $event)"
-          [disabled]="!action.keyMapping"
+          [disabled]="!action.keyMappings || action.keyMappings.size === 0"
           title="Clear keybind">
           🚫
         </button>
