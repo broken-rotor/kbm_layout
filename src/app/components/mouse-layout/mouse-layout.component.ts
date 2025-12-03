@@ -25,8 +25,8 @@ export class MouseLayoutComponent implements OnInit, OnDestroy {
     { code: 'MouseRight', display: 'Right Click', x: 140, y: 20, width: 80, height: 60, className: 'mouse-right' },
     { code: 'MouseScrollUp', display: 'Scroll Up', x: 100, y: 5, width: 40, height: 15, className: 'mouse-scroll' },
     { code: 'MouseScrollDown', display: 'Scroll Down', x: 100, y: 80, width: 40, height: 15, className: 'mouse-scroll' },
-    { code: 'MouseBack', display: 'Back', x: 5, y: 100, width: 50, height: 30, className: 'mouse-side' },
-    { code: 'MouseForward', display: 'Forward', x: 185, y: 100, width: 50, height: 30, className: 'mouse-side' }
+    { code: 'MouseForward', display: 'Forward', x: 5, y: 110, width: 50, height: 30, className: 'mouse-side' },
+    { code: 'MouseBack', display: 'Back', x: 5, y: 145, width: 50, height: 30, className: 'mouse-side' }
   ];
 
   ngOnInit(): void {
