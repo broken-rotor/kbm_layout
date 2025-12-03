@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Action, KeyMapping, DeviceType, ModifierKeyMapping, ModifierSet } from '../models/interfaces';
+import { Action, DeviceType, KeyMapping, ModifierSet } from '../models/interfaces';
 import { StorageService } from './storage.service';
 import { ColorGroupsService } from './color-groups.service';
 import { ModifierStateService } from './modifier-state.service';
@@ -17,13 +17,11 @@ export class ActionsService {
   private selectedActionSubject = new BehaviorSubject<Action | null>(null);
   private selectedDeviceSubject = new BehaviorSubject<DeviceType>(DeviceType.KEYBOARD);
   private keyMappingsSubject = new BehaviorSubject<Map<string, KeyMapping>>(new Map());
-  private modifierMappingsSubject = new BehaviorSubject<Map<string, ModifierKeyMapping>>(new Map());
 
   public actions$ = this.actionsSubject.asObservable();
   public selectedAction$ = this.selectedActionSubject.asObservable();
   public selectedDevice$ = this.selectedDeviceSubject.asObservable();
   public keyMappings$ = this.keyMappingsSubject.asObservable();
-  public modifierMappings$ = this.modifierMappingsSubject.asObservable();
 
   constructor() {
     this.loadData();
@@ -31,18 +29,15 @@ export class ActionsService {
 
   private loadData(): void {
     const actions = this.storageService.loadActions();
-    const mappings = this.storageService.loadMappings();
-    const modifierMappings = this.storageService.loadModifierMappings();
-    
+    const keyMappings = this.storageService.loadKeyMappings();
+
     this.actionsSubject.next(actions);
-    this.keyMappingsSubject.next(mappings);
-    this.modifierMappingsSubject.next(modifierMappings);
+    this.keyMappingsSubject.next(keyMappings);
   }
 
   private saveData(): void {
     this.storageService.saveActions(this.actionsSubject.value);
-    this.storageService.saveMappings(this.keyMappingsSubject.value);
-    this.storageService.saveModifierMappings(this.modifierMappingsSubject.value);
+    this.storageService.saveKeyMappings(this.keyMappingsSubject.value);
   }
 
   // Actions management
@@ -76,25 +71,25 @@ export class ActionsService {
     // Remove action
     const currentActions = this.actionsSubject.value;
     const updatedActions = currentActions.filter(action => action.id !== actionId);
-    
-    // Remove associated mappings
-    const currentMappings = this.keyMappingsSubject.value;
-    const updatedMappings = new Map();
-    
-    currentMappings.forEach((mapping, key) => {
+
+    // Remove associated key mappings (all modifier sets including NONE)
+    const currentKeyMappings = this.keyMappingsSubject.value;
+    const updatedKeyMappings = new Map();
+
+    currentKeyMappings.forEach((mapping, key) => {
       if (mapping.actionId !== actionId) {
-        updatedMappings.set(key, mapping);
+        updatedKeyMappings.set(key, mapping);
       }
     });
 
     this.actionsSubject.next(updatedActions);
-    this.keyMappingsSubject.next(updatedMappings);
-    
+    this.keyMappingsSubject.next(updatedKeyMappings);
+
     // Clear selected action if it was deleted
     if (this.selectedActionSubject.value?.id === actionId) {
       this.selectedActionSubject.next(null);
     }
-    
+
     this.saveData();
   }
 
@@ -109,18 +104,49 @@ export class ActionsService {
 
   // Key mapping management
   mapKeyToAction(keyCode: string, deviceType: DeviceType, displayName: string): void {
+    // Map with ModifierSet.NONE for regular (no-modifier) bindings
+    this.mapKeyToActionWithModifier(keyCode, deviceType, displayName, ModifierSet.NONE);
+  }
+
+  clearKeyMapping(keyCode: string): void {
+    // Clear with ModifierSet.NONE for regular (no-modifier) bindings
+    this.clearModifierKeyMapping(keyCode, ModifierSet.NONE);
+  }
+
+  clearActionMapping(actionId: string): void {
+    // Clear all key mappings (all modifier sets including NONE)
+    const currentKeyMappings = this.keyMappingsSubject.value;
+    const newKeyMappings = new Map();
+
+    currentKeyMappings.forEach((mapping, key) => {
+      if (mapping.actionId !== actionId) {
+        newKeyMappings.set(key, mapping);
+      }
+    });
+
+    this.keyMappingsSubject.next(newKeyMappings);
+
+    // Update action to remove all mappings
+    this.updateAction(actionId, { keyMappings: new Map() });
+  }
+
+  // Modifier-aware mapping management
+  mapKeyToActionWithModifier(keyCode: string, deviceType: DeviceType, displayName: string, modifierSet?: ModifierSet): void {
     const selectedAction = this.selectedActionSubject.value;
     if (!selectedAction) return;
+
+    const targetModifierSet = modifierSet ?? this.modifierStateService.getCurrentModifierSet();
+    const mappingKey = this.createModifierMappingKey(keyCode, targetModifierSet);
 
     const currentMappings = this.keyMappingsSubject.value;
     const newMappings = new Map(currentMappings);
 
-    // Remove existing mapping for this key
-    newMappings.delete(keyCode);
+    // Remove existing mapping for this key+modifier combination
+    newMappings.delete(mappingKey);
 
-    // Remove existing mapping for this action (one action per key)
+    // Remove existing mapping for this action in the target modifier set
     newMappings.forEach((mapping, key) => {
-      if (mapping.actionId === selectedAction.id) {
+      if (mapping.actionId === selectedAction.id && mapping.modifierSet === targetModifierSet) {
         newMappings.delete(key);
       }
     });
@@ -130,114 +156,55 @@ export class ActionsService {
       keyCode,
       deviceType,
       displayName,
-      actionId: selectedAction.id
-    };
-
-    newMappings.set(keyCode, newMapping);
-    this.keyMappingsSubject.next(newMappings);
-
-    // Update action with mapping info
-    this.updateAction(selectedAction.id, { keyMapping: newMapping });
-  }
-
-  clearKeyMapping(keyCode: string): void {
-    const currentMappings = this.keyMappingsSubject.value;
-    const mapping = currentMappings.get(keyCode);
-    
-    if (mapping && mapping.actionId) {
-      // Remove mapping
-      const newMappings = new Map(currentMappings);
-      newMappings.delete(keyCode);
-      this.keyMappingsSubject.next(newMappings);
-
-      // Update action to remove mapping
-      this.updateAction(mapping.actionId, { keyMapping: undefined });
-    }
-  }
-
-  clearActionMapping(actionId: string): void {
-    const currentMappings = this.keyMappingsSubject.value;
-    const newMappings = new Map();
-
-    currentMappings.forEach((mapping, key) => {
-      if (mapping.actionId !== actionId) {
-        newMappings.set(key, mapping);
-      }
-    });
-
-    this.keyMappingsSubject.next(newMappings);
-    this.updateAction(actionId, { keyMapping: undefined });
-  }
-
-  // Modifier-aware mapping management
-  mapKeyToActionWithModifier(keyCode: string, deviceType: DeviceType, displayName: string): void {
-    const selectedAction = this.selectedActionSubject.value;
-    if (!selectedAction) return;
-
-    const currentModifierSet = this.modifierStateService.getCurrentModifierSet();
-    const mappingKey = this.createModifierMappingKey(keyCode, currentModifierSet);
-    
-    const currentMappings = this.modifierMappingsSubject.value;
-    const newMappings = new Map(currentMappings);
-
-    // Remove existing mapping for this key+modifier combination
-    newMappings.delete(mappingKey);
-
-    // Remove existing mapping for this action in the current modifier set
-    newMappings.forEach((mapping, key) => {
-      if (mapping.actionId === selectedAction.id && mapping.modifierSet === currentModifierSet) {
-        newMappings.delete(key);
-      }
-    });
-
-    // Add new mapping
-    const newMapping: ModifierKeyMapping = {
-      keyCode,
-      deviceType,
-      displayName,
-      modifierSet: currentModifierSet,
+      modifierSet: targetModifierSet,
       actionId: selectedAction.id
     };
 
     newMappings.set(mappingKey, newMapping);
-    this.modifierMappingsSubject.next(newMappings);
-    this.saveData();
+    this.keyMappingsSubject.next(newMappings);
+
+    // Update action's keyMappings map
+    const actionKeyMappings = selectedAction.keyMappings || new Map<ModifierSet, KeyMapping>();
+    actionKeyMappings.set(targetModifierSet, newMapping);
+    this.updateAction(selectedAction.id, { keyMappings: actionKeyMappings });
   }
 
   clearModifierKeyMapping(keyCode: string, modifierSet?: ModifierSet): void {
     const targetModifierSet = modifierSet || this.modifierStateService.getCurrentModifierSet();
     const mappingKey = this.createModifierMappingKey(keyCode, targetModifierSet);
-    
-    const currentMappings = this.modifierMappingsSubject.value;
-    const newMappings = new Map(currentMappings);
-    
-    newMappings.delete(mappingKey);
-    this.modifierMappingsSubject.next(newMappings);
+
+    const currentMappings = this.keyMappingsSubject.value;
+    const mapping = currentMappings.get(mappingKey);
+
+    if (mapping && mapping.actionId) {
+      const newMappings = new Map(currentMappings);
+      newMappings.delete(mappingKey);
+      this.keyMappingsSubject.next(newMappings);
+
+      // Update action's keyMappings map
+      const action = this.getActionById(mapping.actionId);
+      if (action && action.keyMappings) {
+        const actionKeyMappings = new Map(action.keyMappings);
+        actionKeyMappings.delete(targetModifierSet);
+        this.updateAction(mapping.actionId, { keyMappings: actionKeyMappings });
+      }
+    }
+
     this.saveData();
   }
 
-  getModifierMappingForKey(keyCode: string, modifierSet?: ModifierSet): ModifierKeyMapping | undefined {
+  getModifierMappingForKey(keyCode: string, modifierSet?: ModifierSet): KeyMapping | undefined {
     const targetModifierSet = modifierSet || this.modifierStateService.getCurrentModifierSet();
     const mappingKey = this.createModifierMappingKey(keyCode, targetModifierSet);
-    return this.modifierMappingsSubject.value.get(mappingKey);
+    return this.keyMappingsSubject.value.get(mappingKey);
   }
 
-  getCurrentMappingForKey(keyCode: string): KeyMapping | ModifierKeyMapping | undefined {
+  getCurrentMappingForKey(keyCode: string): KeyMapping | undefined {
     const currentModifierSet = this.modifierStateService.getCurrentModifierSet();
-    
-    // If no modifiers are pressed, use the regular mapping
-    if (currentModifierSet === ModifierSet.NONE) {
-      return this.keyMappingsSubject.value.get(keyCode);
-    }
-    
-    // Otherwise, try to get the modifier mapping
-    const modifierMapping = this.getModifierMappingForKey(keyCode, currentModifierSet);
-    if (modifierMapping) {
-      return modifierMapping;
-    }
-    
-    // Fall back to regular mapping if no modifier mapping exists
-    return this.keyMappingsSubject.value.get(keyCode);
+
+    // Return the mapping for the current modifier set (including NONE for no-modifier bindings)
+    // Only return keys that have bindings for the current modifier combination
+    return this.getModifierMappingForKey(keyCode, currentModifierSet);
   }
 
   private createModifierMappingKey(keyCode: string, modifierSet: ModifierSet): string {
@@ -252,10 +219,6 @@ export class ActionsService {
   getActionColor(action: Action): string {
     const colorGroup = this.colorGroupsService.getColorGroupById(action.colorGroupId);
     return colorGroup?.color || '#cccccc'; // Default gray if color group not found
-  }
-
-  getMappingForKey(keyCode: string): KeyMapping | undefined {
-    return this.keyMappingsSubject.value.get(keyCode);
   }
 
   private generateId(): string {

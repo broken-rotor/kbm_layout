@@ -107,10 +107,31 @@ export class ActionsListComponent implements OnInit, OnDestroy {
   }
 
   getMappingDisplay(action: Action): string {
-    if (action.keyMapping) {
-      return action.keyMapping.displayName;
+    const mappings: string[] = [];
+
+    // All mappings are now in keyMappings (all modifier sets including NONE)
+    if (action.keyMappings && action.keyMappings.size > 0) {
+      action.keyMappings.forEach((mapping, modifierSet) => {
+        const modifierPrefix = this.getModifierPrefix(modifierSet);
+        mappings.push(`${modifierPrefix}${mapping.displayName}`);
+      });
     }
-    return 'Not Mapped';
+
+    return mappings.length > 0 ? mappings.join(', ') : 'Not Mapped';
+  }
+
+  private getModifierPrefix(modifierSet: string): string {
+    switch (modifierSet) {
+      case 'none': return ''; // No prefix for regular (no-modifier) bindings
+      case 'ctrl': return 'Ctrl+';
+      case 'alt': return 'Alt+';
+      case 'shift': return 'Shift+';
+      case 'ctrl+alt': return 'Ctrl+Alt+';
+      case 'ctrl+shift': return 'Ctrl+Shift+';
+      case 'alt+shift': return 'Alt+Shift+';
+      case 'ctrl+alt+shift': return 'Ctrl+Alt+Shift+';
+      default: return '';
+    }
   }
 
   getActionColor(action: Action): string {

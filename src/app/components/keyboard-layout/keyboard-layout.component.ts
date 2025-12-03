@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 import { ActionsService } from '../../services/actions.service';
 import { ModifierStateService } from '../../services/modifier-state.service';
-import { KeyboardKey, DeviceType, Action, KeyMapping, ModifierKeyMapping, ModifierSet } from '../../models/interfaces';
+import { KeyboardKey, DeviceType, Action, KeyMapping, ModifierSet } from '../../models/interfaces';
 
 @Component({
   selector: 'app-keyboard-layout',
@@ -15,11 +15,11 @@ import { KeyboardKey, DeviceType, Action, KeyMapping, ModifierKeyMapping, Modifi
 export class KeyboardLayoutComponent implements OnInit, OnDestroy {
   private actionsService = inject(ActionsService);
   private modifierStateService = inject(ModifierStateService);
+  private cdr = inject(ChangeDetectorRef);
   private destroy$ = new Subject<void>();
 
   selectedAction: Action | null = null;
   keyMappings = new Map<string, KeyMapping>();
-  modifierMappings = new Map<string, ModifierKeyMapping>();
   currentModifierSet: ModifierSet = ModifierSet.NONE;
 
   // UK Keyboard Layout (ISO Layout)
@@ -135,16 +135,11 @@ export class KeyboardLayoutComponent implements OnInit, OnDestroy {
         this.keyMappings = mappings;
       });
 
-    this.actionsService.modifierMappings$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(mappings => {
-        this.modifierMappings = mappings;
-      });
-
     this.modifierStateService.currentModifierSet$
       .pipe(takeUntil(this.destroy$))
       .subscribe(modifierSet => {
         this.currentModifierSet = modifierSet;
+        this.cdr.markForCheck();
       });
   }
 
@@ -204,7 +199,7 @@ export class KeyboardLayoutComponent implements OnInit, OnDestroy {
     }
 
     if (key.code === 'Dead') {
-      const mapping = this.keyMappings.get(key.code);
+      const mapping = this.actionsService.getCurrentMappingForKey(key.code);
       if (mapping && mapping.actionId) {
         classes += ' key-mapped';
       }
