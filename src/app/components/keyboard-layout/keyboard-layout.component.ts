@@ -2,7 +2,8 @@ import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
 import { ActionsService } from '../../services/actions.service';
-import { KeyboardKey, DeviceType, Action, KeyMapping } from '../../models/interfaces';
+import { ModifierStateService } from '../../services/modifier-state.service';
+import { KeyboardKey, DeviceType, Action, KeyMapping, ModifierKeyMapping, ModifierSet } from '../../models/interfaces';
 
 @Component({
   selector: 'app-keyboard-layout',
@@ -13,10 +14,13 @@ import { KeyboardKey, DeviceType, Action, KeyMapping } from '../../models/interf
 })
 export class KeyboardLayoutComponent implements OnInit, OnDestroy {
   private actionsService = inject(ActionsService);
+  private modifierStateService = inject(ModifierStateService);
   private destroy$ = new Subject<void>();
 
   selectedAction: Action | null = null;
   keyMappings = new Map<string, KeyMapping>();
+  modifierMappings = new Map<string, ModifierKeyMapping>();
+  currentModifierSet: ModifierSet = ModifierSet.NONE;
 
   // UK Keyboard Layout (ISO Layout)
   keyboardRows: KeyboardKey[][] = [
@@ -130,6 +134,18 @@ export class KeyboardLayoutComponent implements OnInit, OnDestroy {
       .subscribe(mappings => {
         this.keyMappings = mappings;
       });
+
+    this.actionsService.modifierMappings$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(mappings => {
+        this.modifierMappings = mappings;
+      });
+
+    this.modifierStateService.currentModifierSet$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(modifierSet => {
+        this.currentModifierSet = modifierSet;
+      });
   }
 
   ngOnDestroy(): void {
@@ -139,16 +155,24 @@ export class KeyboardLayoutComponent implements OnInit, OnDestroy {
 
   onKeyClick(key: KeyboardKey): void {
     if (this.selectedAction) {
-      // Map the key to the selected action
-      this.actionsService.mapKeyToAction(key.code, DeviceType.KEYBOARD, key.display);
+      // Use modifier-aware mapping if modifiers are pressed, otherwise use regular mapping
+      if (this.currentModifierSet !== ModifierSet.NONE) {
+        this.actionsService.mapKeyToActionWithModifier(key.code, DeviceType.KEYBOARD, key.display);
+      } else {
+        this.actionsService.mapKeyToAction(key.code, DeviceType.KEYBOARD, key.display);
+      }
     } else {
       // If no action selected, clear the mapping for this key
-      this.actionsService.clearKeyMapping(key.code);
+      if (this.currentModifierSet !== ModifierSet.NONE) {
+        this.actionsService.clearModifierKeyMapping(key.code);
+      } else {
+        this.actionsService.clearKeyMapping(key.code);
+      }
     }
   }
 
   getKeyStyle(key: KeyboardKey): Record<string, string> {
-    const mapping = this.keyMappings.get(key.code);
+    const mapping = this.actionsService.getCurrentMappingForKey(key.code);
     const baseStyle: Record<string, string> = {};
 
     if (mapping && mapping.actionId) {
@@ -191,6 +215,18 @@ export class KeyboardLayoutComponent implements OnInit, OnDestroy {
     }
 
     return classes;
+  }
+
+  getKeyTitle(key: KeyboardKey): string {
+    const mapping = this.actionsService.getCurrentMappingForKey(key.code);
+    if (mapping && mapping.actionId) {
+      const action = this.actionsService.getActionById(mapping.actionId);
+      if (action) {
+        const modifierText = this.currentModifierSet !== ModifierSet.NONE ? ` (${this.currentModifierSet})` : '';
+        return `${key.display} - ${action.name}${modifierText}`;
+      }
+    }
+    return key.display;
   }
 
   private getContrastColor(hexColor: string): string {
