@@ -158,15 +158,28 @@ export class StorageService {
       const stored = localStorage.getItem(this.KEYBIND_SETS_KEY);
       if (!stored) return [];
 
-      const parsedSets: any[] = JSON.parse(stored);
+      const parsedSets: {
+        id: string;
+        name: string;
+        actions: {
+          id: string;
+          name: string;
+          colorGroupId: string;
+          keyMappings?: [string, KeyMapping][];
+        }[];
+        keyMappings: [string, KeyMapping][];
+        colorGroups: ColorGroup[];
+        createdAt: string;
+        lastModified: string;
+      }[] = JSON.parse(stored);
       // Deserialize keybind sets with nested Maps and Dates
       return parsedSets.map(set => ({
         ...set,
         keyMappings: new Map(set.keyMappings || []),
-        actions: set.actions.map((action: any) => ({
+        actions: set.actions.map((action) => ({
           ...action,
           keyMappings: action.keyMappings
-            ? new Map(action.keyMappings)
+            ? new Map(action.keyMappings.map(([key, value]) => [key as ModifierSet, value]))
             : undefined
         })),
         createdAt: new Date(set.createdAt),

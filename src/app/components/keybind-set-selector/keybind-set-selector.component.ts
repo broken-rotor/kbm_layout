@@ -43,8 +43,9 @@ export class KeybindSetSelectorComponent implements OnDestroy {
     this.destroy$.complete();
   }
 
-  onKeybindSetChange(setId: string): void {
-    this.keybindSetsService.selectKeybindSet(setId);
+  onKeybindSetChange(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    this.keybindSetsService.selectKeybindSet(target.value);
   }
 
   // Add new keybind set

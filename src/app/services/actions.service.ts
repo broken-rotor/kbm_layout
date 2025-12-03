@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, combineLatest } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { Action, DeviceType, KeyMapping, ModifierSet } from '../models/interfaces';
 import { StorageService } from './storage.service';
 import { ColorGroupsService } from './color-groups.service';

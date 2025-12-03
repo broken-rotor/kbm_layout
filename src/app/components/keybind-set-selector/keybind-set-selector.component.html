@@ -3,7 +3,7 @@
   <select 
     class="keybind-set-dropdown"
     [value]="selectedKeybindSet?.id || ''"
-    (change)="onKeybindSetChange($event.target.value)"
+    (change)="onKeybindSetChange($event)"
     title="Select keybind set">
     @for (set of keybindSets; track set.id) {
       <option [value]="set.id">{{ set.name }}</option>
@@ -39,8 +39,8 @@
 
 <!-- Add Modal -->
 @if (showAddModal) {
-  <div class="modal-overlay" (click)="closeAddModal()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
+  <div class="modal-overlay" (click)="closeAddModal()" (keydown.escape)="closeAddModal()" tabindex="0">
+    <div class="modal-content" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()" tabindex="0">
       <div class="modal-header">
         <h3>Add New Keybind Set</h3>
         <button class="close-btn" (click)="closeAddModal()">×</button>
@@ -71,8 +71,8 @@
 
 <!-- Rename Modal -->
 @if (showRenameModal) {
-  <div class="modal-overlay" (click)="closeRenameModal()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
+  <div class="modal-overlay" (click)="closeRenameModal()" (keydown.escape)="closeRenameModal()" tabindex="0">
+    <div class="modal-content" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()" tabindex="0">
       <div class="modal-header">
         <h3>Rename Keybind Set</h3>
         <button class="close-btn" (click)="closeRenameModal()">×</button>
@@ -102,8 +102,8 @@
 
 <!-- Delete Confirmation Modal -->
 @if (showDeleteModal) {
-  <div class="modal-overlay" (click)="closeDeleteModal()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
+  <div class="modal-overlay" (click)="closeDeleteModal()" (keydown.escape)="closeDeleteModal()" tabindex="0">
+    <div class="modal-content" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()" tabindex="0">
       <div class="modal-header">
         <h3>Delete Keybind Set</h3>
         <button class="close-btn" (click)="closeDeleteModal()">×</button>
