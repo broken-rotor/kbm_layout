@@ -26,99 +26,139 @@ export class KeyboardLayoutComponent implements OnInit, OnDestroy {
   keyboardRows: KeyboardKey[][] = [
     // Function row
     [
-      { code: 'Escape', display: 'Esc', row: 0, col: 0, className: 'key-esc' },
-      { code: 'Dead', display: '', row: 0, col: 1 },
-      { code: 'F1', display: 'F1', row: 0, col: 2, className: 'key-function' },
-      { code: 'F2', display: 'F2', row: 0, col: 3, className: 'key-function' },
-      { code: 'F3', display: 'F3', row: 0, col: 4, className: 'key-function' },
-      { code: 'F4', display: 'F4', row: 0, col: 5, className: 'key-function' },
-      { code: 'Dead', display: '', row: 0, col: 6 },
-      { code: 'F5', display: 'F5', row: 0, col: 7, className: 'key-function' },
-      { code: 'F6', display: 'F6', row: 0, col: 8, className: 'key-function' },
-      { code: 'F7', display: 'F7', row: 0, col: 9, className: 'key-function' },
-      { code: 'F8', display: 'F8', row: 0, col: 10, className: 'key-function' },
-      { code: 'Dead', display: '', row: 0, col: 11 },
-      { code: 'F9', display: 'F9', row: 0, col: 12, className: 'key-function' },
-      { code: 'F10', display: 'F10', row: 0, col: 13, className: 'key-function' },
-      { code: 'F11', display: 'F11', row: 0, col: 14, className: 'key-function' },
-      { code: 'F12', display: 'F12', row: 0, col: 15, className: 'key-function' }
+      { code: 'Escape', display: 'Esc', className: 'key-esc' },
+      { code: 'Dead1-1', display: '', dead: true },
+      { code: 'F1', display: 'F1', className: 'key-function' },
+      { code: 'F2', display: 'F2', className: 'key-function' },
+      { code: 'F3', display: 'F3', className: 'key-function' },
+      { code: 'F4', display: 'F4', className: 'key-function' },
+      { code: 'Dead1-2', display: '', dead: true },
+      { code: 'F5', display: 'F5', className: 'key-function' },
+      { code: 'F6', display: 'F6', className: 'key-function' },
+      { code: 'F7', display: 'F7', className: 'key-function' },
+      { code: 'F8', display: 'F8', className: 'key-function' },
+      { code: 'Dead1-3', display: '', dead: true },
+      { code: 'F9', display: 'F9', className: 'key-function' },
+      { code: 'F10', display: 'F10', className: 'key-function' },
+      { code: 'F11', display: 'F11', className: 'key-function' },
+      { code: 'F12', display: 'F12', className: 'key-function' },
+      { code: 'Dead1-4', display: '', dead: true, className: 'narrow-space' },
+      { code: 'PrtScrn', display: 'PS', className: 'key-function' },
+      { code: 'ScrollLock', display: 'SL', className: 'key-function' },
+      { code: 'PauseBreak', display: 'P/B', className: 'key-function' }
     ],
     // Number row
     [
-      { code: 'Backquote', display: '`', row: 1, col: 0 },
-      { code: 'Digit1', display: '1', row: 1, col: 1 },
-      { code: 'Digit2', display: '2', row: 1, col: 2 },
-      { code: 'Digit3', display: '3', row: 1, col: 3 },
-      { code: 'Digit4', display: '4', row: 1, col: 4 },
-      { code: 'Digit5', display: '5', row: 1, col: 5 },
-      { code: 'Digit6', display: '6', row: 1, col: 6 },
-      { code: 'Digit7', display: '7', row: 1, col: 7 },
-      { code: 'Digit8', display: '8', row: 1, col: 8 },
-      { code: 'Digit9', display: '9', row: 1, col: 9 },
-      { code: 'Digit0', display: '0', row: 1, col: 10 },
-      { code: 'Minus', display: '-', row: 1, col: 11 },
-      { code: 'Equal', display: '=', row: 1, col: 12 },
-      { code: 'Backspace', display: 'Backspace', row: 1, col: 13, width: 2 }
+      { code: 'Backquote', display: '`' },
+      { code: 'Digit1', display: '1' },
+      { code: 'Digit2', display: '2' },
+      { code: 'Digit3', display: '3' },
+      { code: 'Digit4', display: '4' },
+      { code: 'Digit5', display: '5' },
+      { code: 'Digit6', display: '6' },
+      { code: 'Digit7', display: '7' },
+      { code: 'Digit8', display: '8' },
+      { code: 'Digit9', display: '9' },
+      { code: 'Digit0', display: '0' },
+      { code: 'Minus', display: '-' },
+      { code: 'Equal', display: '=' },
+      { code: 'Backspace', display: 'Backspace', width: 88 },
+      { code: 'Dead2-1', display: '', dead: true, className: 'narrow-space' },
+      { code: 'Insert', display: 'Ins', className: 'key-function' },
+      { code: 'Home', display: 'Hm', className: 'key-function' },
+      { code: 'PgUp', display: 'PUp', className: 'key-function' },
+      { code: 'Dead2-2', display: '', dead: true, className: 'narrow-space' },
+      { code: 'NumLock', display: 'NL', className: 'key-function' },
+      { code: 'Keypad/', display: '/' },
+      { code: 'Keypad*', display: '*' },
+      { code: 'Keypad-', display: '-' }
     ],
     // QWERTY row (with ISO Enter spanning to next row)
     [
-      { code: 'Tab', display: 'Tab', row: 2, col: 0, width: 1.5 },
-      { code: 'KeyQ', display: 'Q', row: 2, col: 1 },
-      { code: 'KeyW', display: 'W', row: 2, col: 2 },
-      { code: 'KeyE', display: 'E', row: 2, col: 3 },
-      { code: 'KeyR', display: 'R', row: 2, col: 4 },
-      { code: 'KeyT', display: 'T', row: 2, col: 5 },
-      { code: 'KeyY', display: 'Y', row: 2, col: 6 },
-      { code: 'KeyU', display: 'U', row: 2, col: 7 },
-      { code: 'KeyI', display: 'I', row: 2, col: 8 },
-      { code: 'KeyO', display: 'O', row: 2, col: 9 },
-      { code: 'KeyP', display: 'P', row: 2, col: 10 },
-      { code: 'BracketLeft', display: '[', row: 2, col: 11 },
-      { code: 'BracketRight', display: ']', row: 2, col: 12 },
-      { code: 'Enter', display: 'Enter', row: 2, col: 13, className: 'key-enter-iso' }
+      { code: 'Tab', display: 'Tab', width: 63 },
+      { code: 'KeyQ', display: 'Q' },
+      { code: 'KeyW', display: 'W' },
+      { code: 'KeyE', display: 'E' },
+      { code: 'KeyR', display: 'R' },
+      { code: 'KeyT', display: 'T' },
+      { code: 'KeyY', display: 'Y' },
+      { code: 'KeyU', display: 'U' },
+      { code: 'KeyI', display: 'I' },
+      { code: 'KeyO', display: 'O' },
+      { code: 'KeyP', display: 'P' },
+      { code: 'BracketLeft', display: '[' },
+      { code: 'BracketRight', display: ']' },
+      { code: 'Enter', display: 'Enter', width: 66 },
+      { code: 'Dead3-1', display: '', dead: true, className: 'narrow-space' },
+      { code: 'Delete', display: 'Del', className: 'key-function' },
+      { code: 'End', display: 'End', className: 'key-function' },
+      { code: 'PgDown', display: 'PDn', className: 'key-function' },
+      { code: 'Dead3-2', display: '', dead: true, className: 'narrow-space' },
+      { code: 'Keypad7', display: '7' },
+      { code: 'Keypad8', display: '8' },
+      { code: 'Keypad9', display: '9' },
+      { code: 'Keypad+', display: '+' }
     ],
     // ASDF row (with ISO Enter continuation and UK hash key)
     [
-      { code: 'CapsLock', display: 'Caps', row: 3, col: 0, width: 1.75 },
-      { code: 'KeyA', display: 'A', row: 3, col: 1 },
-      { code: 'KeyS', display: 'S', row: 3, col: 2 },
-      { code: 'KeyD', display: 'D', row: 3, col: 3 },
-      { code: 'KeyF', display: 'F', row: 3, col: 4 },
-      { code: 'KeyG', display: 'G', row: 3, col: 5 },
-      { code: 'KeyH', display: 'H', row: 3, col: 6 },
-      { code: 'KeyJ', display: 'J', row: 3, col: 7 },
-      { code: 'KeyK', display: 'K', row: 3, col: 8 },
-      { code: 'KeyL', display: 'L', row: 3, col: 9 },
-      { code: 'Semicolon', display: ';', row: 3, col: 10 },
-      { code: 'Quote', display: "'", row: 3, col: 11 },
-      { code: 'Backslash', display: '#', row: 3, col: 12 }
+      { code: 'CapsLock', display: 'Caps', width: 76 },
+      { code: 'KeyA', display: 'A' },
+      { code: 'KeyS', display: 'S' },
+      { code: 'KeyD', display: 'D' },
+      { code: 'KeyF', display: 'F' },
+      { code: 'KeyG', display: 'G' },
+      { code: 'KeyH', display: 'H' },
+      { code: 'KeyJ', display: 'J' },
+      { code: 'KeyK', display: 'K' },
+      { code: 'KeyL', display: 'L' },
+      { code: 'Semicolon', display: ';' },
+      { code: 'Quote', display: "'" },
+      { code: 'Backslash', display: '#' },
+      { code: 'Dead4-1', display: '', dead: true, width: 218 },
+      { code: 'Keypad4', display: '4' },
+      { code: 'Keypad5', display: '5' },
+      { code: 'Keypad6', display: '6' }
     ],
     // ZXCV row (with UK backslash key)
     [
-      { code: 'ShiftLeft', display: 'Shift', row: 4, col: 0, width: 1.25 },
-      { code: 'IntlBackslash', display: '\\', row: 4, col: 1 },
-      { code: 'KeyZ', display: 'Z', row: 4, col: 2 },
-      { code: 'KeyX', display: 'X', row: 4, col: 3 },
-      { code: 'KeyC', display: 'C', row: 4, col: 4 },
-      { code: 'KeyV', display: 'V', row: 4, col: 5 },
-      { code: 'KeyB', display: 'B', row: 4, col: 6 },
-      { code: 'KeyN', display: 'N', row: 4, col: 7 },
-      { code: 'KeyM', display: 'M', row: 4, col: 8 },
-      { code: 'Comma', display: ',', row: 4, col: 9 },
-      { code: 'Period', display: '.', row: 4, col: 10 },
-      { code: 'Slash', display: '/', row: 4, col: 11 },
-      { code: 'ShiftRight', display: 'Shift', row: 4, col: 12, width: 2.75 }
+      { code: 'ShiftLeft', display: 'Shift', width: 55, className: 'key-modifier' },
+      { code: 'IntlBackslash', display: '\\' },
+      { code: 'KeyZ', display: 'Z' },
+      { code: 'KeyX', display: 'X' },
+      { code: 'KeyC', display: 'C' },
+      { code: 'KeyV', display: 'V' },
+      { code: 'KeyB', display: 'B' },
+      { code: 'KeyN', display: 'N' },
+      { code: 'KeyM', display: 'M' },
+      { code: 'Comma', display: ',' },
+      { code: 'Period', display: '.' },
+      { code: 'Slash', display: '/' },
+      { code: 'ShiftRight', display: 'Shift', width: 116, className: 'key-modifier' },
+      { code: 'Dead4-1', display: '', dead: true, width: 55 },
+      { code: 'UpArrow', display: 'Up', className: 'key-function' },
+      { code: 'Dead4-2', display: '', dead: true, width: 60 },
+      { code: 'Keypad1', display: '1' },
+      { code: 'Keypad2', display: '2' },
+      { code: 'Keypad3', display: '3' },
+      { code: 'KeypadEnter', display: 'Etr' }
     ],
     // Bottom row
     [
-      { code: 'ControlLeft', display: 'Ctrl', row: 5, col: 0, width: 1.5 },
-      { code: 'MetaLeft', display: 'Win', row: 5, col: 1 },
-      { code: 'AltLeft', display: 'Alt', row: 5, col: 2, width: 1.25 },
-      { code: 'Space', display: 'Space', row: 5, col: 3, className: 'key-space' },
-      { code: 'AltRight', display: 'AltGr', row: 5, col: 4, width: 1.25 },
-      { code: 'MetaRight', display: 'Win', row: 5, col: 5 },
-      { code: 'ContextMenu', display: 'Menu', row: 5, col: 6 },
-      { code: 'ControlRight', display: 'Ctrl', row: 5, col: 7, width: 1.25 }
+      { code: 'ControlLeft', display: 'Ctrl', width: 63, className: 'key-modifier' },
+      { code: 'MetaLeft', display: 'Win' },
+      { code: 'AltLeft', display: 'Alt', width: 55, className: 'key-modifier' },
+      { code: 'Space', display: 'Space', width: 292 },
+      { code: 'AltRight', display: 'AltGr', width: 55, className: 'key-modifier' },
+      { code: 'MetaRight', display: 'Win' },
+      { code: 'ContextMenu', display: 'Menu' },
+      { code: 'ControlRight', display: 'Ctrl', width: 57, className: 'key-modifier' },
+      { code: 'Dead5-1', display: '', dead: true, className: 'narrow-space' },
+      { code: 'LeftArrow', display: 'Lft', className: 'key-function' },
+      { code: 'DownArrow', display: 'Dn', className: 'key-function' },
+      { code: 'RightArrow', display: 'Rgt', className: 'key-function' },
+      { code: 'Dead5-2', display: '', dead: true, className: 'narrow-space' },
+      { code: 'Keypad0', display: '0', width: 88 },
+      { code: 'Keypad.', display: '.' }
     ]
   ];
 
@@ -127,12 +167,14 @@ export class KeyboardLayoutComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(action => {
         this.selectedAction = action;
+        this.cdr.markForCheck();
       });
 
     this.actionsService.keyMappings$
       .pipe(takeUntil(this.destroy$))
       .subscribe(mappings => {
         this.keyMappings = mappings;
+        this.cdr.markForCheck();
       });
 
     this.modifierStateService.modifierState$
@@ -159,6 +201,8 @@ export class KeyboardLayoutComponent implements OnInit, OnDestroy {
       } else {
         this.actionsService.mapKeyToAction(key.code, DeviceType.KEYBOARD, key.display);
       }
+      // Deselect the action after binding to exit selection mode
+      this.actionsService.selectAction(null);
     } else {
       // If no action selected, clear the mapping for this key
       if (this.currentModifierSet !== ModifierSet.NONE) {
@@ -170,12 +214,12 @@ export class KeyboardLayoutComponent implements OnInit, OnDestroy {
   }
 
   getKeyStyle(key: KeyboardKey): Record<string, string> {
-    const mapping = this.actionsService.getCurrentMappingForKey(key.code);
+    const mapping = this.actionsService.getModifierMappingForKey(key.code, this.currentModifierSet);
     const baseStyle: Record<string, string> = {};
 
     // Check if this is a modifier key and if it's currently pressed
     const isModifierPressed = this.isModifierKeyPressed(key.code);
-    
+
     if (mapping && mapping.actionId) {
       const action = this.actionsService.getActionById(mapping.actionId);
       if (action) {
@@ -193,7 +237,21 @@ export class KeyboardLayoutComponent implements OnInit, OnDestroy {
       baseStyle['box-shadow'] = '0 0 8px rgba(74, 144, 226, 0.6)';
     }
 
+    if (key.width !== undefined) {
+      baseStyle['width'] = key.width.toString() + 'px';
+    }
+
     return baseStyle;
+  }
+
+  getDeadKeyStyle(key: KeyboardKey): Record<string, string> {
+    const baseStyle: Record<string, string> = {};
+
+    if (key.width !== undefined) {
+      baseStyle['min-width'] = key.width.toString() + 'px';
+    }
+
+    return baseStyle;    
   }
 
   private isModifierKeyPressed(keyCode: string): boolean {
@@ -219,9 +277,25 @@ export class KeyboardLayoutComponent implements OnInit, OnDestroy {
 
   getKeyClasses(key: KeyboardKey): string {
     let classes = 'keyboard-key';
-    if (key.code === 'Dead') {
-      classes = 'keyboard-dead-key'
+    
+    if (key.className) {
+      classes += ` ${key.className}`;
     }
+
+    const mapping = this.actionsService.getModifierMappingForKey(key.code, this.currentModifierSet);
+    if (mapping && mapping.actionId) {
+      classes += ' key-mapped';
+    }
+
+    if (this.selectedAction) {
+      classes += ' key-selectable';
+    }
+
+    return classes;
+  }
+
+  getDeadKeyClasses(key: KeyboardKey): string {
+    let classes = 'keyboard-dead-key';
     
     if (key.className) {
       classes += ` ${key.className}`;
@@ -231,22 +305,11 @@ export class KeyboardLayoutComponent implements OnInit, OnDestroy {
       classes += ' key-width-' + key.width*100;
     }
 
-    if (key.code === 'Dead') {
-      const mapping = this.actionsService.getCurrentMappingForKey(key.code);
-      if (mapping && mapping.actionId) {
-        classes += ' key-mapped';
-      }
-
-      if (this.selectedAction) {
-        classes += ' key-selectable';
-      }
-    }
-
     return classes;
   }
 
   getKeyTitle(key: KeyboardKey): string {
-    const mapping = this.actionsService.getCurrentMappingForKey(key.code);
+    const mapping = this.actionsService.getModifierMappingForKey(key.code, this.currentModifierSet);
     if (mapping && mapping.actionId) {
       const action = this.actionsService.getActionById(mapping.actionId);
       if (action) {

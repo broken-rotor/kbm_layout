@@ -51,8 +51,7 @@ export enum DeviceType {
 export interface KeyboardKey {
   code: string;
   display: string;
-  row: number;
-  col: number;
+  dead?: boolean;
   width?: number;
   height?: number;
   className?: string;

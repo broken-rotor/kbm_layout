@@ -106,40 +106,14 @@
 }
 
 /* Special key styles */
-.keyboard-key.key-wide {
-  min-width: 63px;
-}
-
 .keyboard-dead-key {
   min-width: 27px;
+  background: rgba(26, 26, 26, 0.3);
+  border: 0px;
 }
 
-.keyboard-key.key-width-125 {
-  min-width: 55px;
-}
-
-.keyboard-key.key-width-150 {
-  min-width: 63px;
-}
-
-.keyboard-key.key-width-175 {
-  min-width: 76px;
-}
-
-.keyboard-key.key-width-200 {
-  min-width: 88px;
-}
-
-.keyboard-key.key-width-275 {
-  min-width: 115.5px;
-}
-
-.keyboard-key.key-space {
-  min-width: 292px;
-}
-
-.keyboard-key.key-enter-iso {
-  min-width: 66px;
+.keyboard-dead-key.narrow-space {
+  min-width: 12px;
 }
 
 .keyboard-key.key-function {
@@ -169,4 +143,21 @@
   box-shadow: 
     0 3px 8px rgba(0, 0, 0, 0.4),
     inset 0 1px 0 rgba(255, 107, 107, 0.3);
+}
+
+.keyboard-key.key-modifier {
+  background: linear-gradient(145deg, #1a1a4a, #0a0a2a);
+  color: #6b6bff;
+  border-color: #4444ff;
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(107, 107, 255, 0.2);
+}
+
+.keyboard-key.key-modifier:hover {
+  background: linear-gradient(145deg, #2a2a5a, #1a1a3a);
+  border-color: #5555ff;
+  box-shadow: 
+    0 3px 8px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(107, 107, 255, 0.3);
 }

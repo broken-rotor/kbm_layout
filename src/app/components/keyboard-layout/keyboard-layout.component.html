@@ -3,8 +3,8 @@
     @for (row of keyboardRows; track $index) {
       <div class="keyboard-row">
         @for (key of row; track key.code) {
-          @if (key.code === "Dead") {
-            <div class="{{ getKeyClasses(key) }}"></div>
+          @if (key.dead === true) {
+            <div class="{{ getDeadKeyClasses(key) }}" [ngStyle]="getDeadKeyStyle(key)"></div>
           }
           @else {
             <button
