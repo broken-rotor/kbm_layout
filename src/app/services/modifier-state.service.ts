@@ -148,4 +148,38 @@ export class ModifierStateService {
     const state = this.modifierStateSubject.value;
     return state[modifier];
   }
+
+  // Get effective modifier set considering conflicts (to be used by components)
+  getEffectiveModifierSet(conflictChecker?: (modifier: 'ctrl' | 'alt' | 'shift') => boolean): ModifierSet {
+    const state = this.modifierStateSubject.value;
+    
+    // If no conflict checker provided, return the current modifier set
+    if (!conflictChecker) {
+      return this.getCurrentModifierSet();
+    }
+
+    // Check for conflicts and exclude conflicted modifiers
+    const effectiveCtrl = state.ctrl && !conflictChecker('ctrl');
+    const effectiveAlt = state.alt && !conflictChecker('alt');
+    const effectiveShift = state.shift && !conflictChecker('shift');
+
+    // Calculate effective modifier set
+    if (effectiveCtrl && effectiveAlt && effectiveShift) {
+      return ModifierSet.CTRL_ALT_SHIFT;
+    } else if (effectiveCtrl && effectiveAlt) {
+      return ModifierSet.CTRL_ALT;
+    } else if (effectiveCtrl && effectiveShift) {
+      return ModifierSet.CTRL_SHIFT;
+    } else if (effectiveAlt && effectiveShift) {
+      return ModifierSet.ALT_SHIFT;
+    } else if (effectiveCtrl) {
+      return ModifierSet.CTRL;
+    } else if (effectiveAlt) {
+      return ModifierSet.ALT;
+    } else if (effectiveShift) {
+      return ModifierSet.SHIFT;
+    }
+
+    return ModifierSet.NONE;
+  }
 }
