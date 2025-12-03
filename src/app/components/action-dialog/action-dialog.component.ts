@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { Action, ColorGroup } from '../../models/interfaces';
 import { ColorGroupsService } from '../../services/color-groups.service';
+import { ColorGroupsManagementComponent } from '../color-groups-management/color-groups-management.component';
 
 @Component({
   selector: 'app-action-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ColorGroupsManagementComponent],
   templateUrl: './action-dialog.component.html',
   styleUrls: ['./action-dialog.component.css']
 })
@@ -23,6 +24,7 @@ export class ActionDialogComponent implements OnInit, OnDestroy {
   actionName = '';
   selectedColorGroupId = '';
   colorGroups: ColorGroup[] = [];
+  showGroupManager = false;
 
   ngOnInit(): void {
     this.colorGroupsService.colorGroups$
@@ -85,5 +87,12 @@ export class ActionDialogComponent implements OnInit, OnDestroy {
 
   get dialogTitle(): string {
     return this.isEditing ? 'Edit Action' : 'Add New Action';
+  }
+
+  /**
+   * Toggle group manager visibility
+   */
+  toggleGroupManager(): void {
+    this.showGroupManager = !this.showGroupManager;
   }
 }

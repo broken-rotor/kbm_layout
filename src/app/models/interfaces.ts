@@ -2,6 +2,7 @@ export interface ColorGroup {
   id: string;
   name: string;
   color: string;
+  isDefault?: boolean;
 }
 
 export interface Action {
