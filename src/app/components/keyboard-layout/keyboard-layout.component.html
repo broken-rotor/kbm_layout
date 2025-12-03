@@ -1,16 +1,21 @@
 <div class="keyboard-container">
   <div class="keyboard-layout">
     @for (row of keyboardRows; track $index) {
-      <div class="keyboard-row" [class.has-iso-enter]="$index === 2">
+      <div class="keyboard-row">
         @for (key of row; track key.code) {
-          <button
-            class="{{ getKeyClasses(key) }}"
-            [ngStyle]="getKeyStyle(key)"
-            (click)="onKeyClick(key)"
-            [title]="key.display"
-            type="button">
-            {{ key.display }}
-          </button>
+          @if (key.code == "Dead") {
+            <div class="{{ getKeyClasses(key) }}"></div>
+          }
+          @else {
+            <button
+              class="{{ getKeyClasses(key) }}"
+              [ngStyle]="getKeyStyle(key)"
+              (click)="onKeyClick(key)"
+              [title]="key.display"
+              type="button">
+              {{ key.display }}
+            </button>
+          }
         }
       </div>
     }
