@@ -23,18 +23,21 @@ export class KeyboardLayoutComponent implements OnInit, OnDestroy {
     // Function row
     [
       { code: 'Escape', display: 'Esc', row: 0, col: 0, className: 'key-esc' },
-      { code: 'F1', display: 'F1', row: 0, col: 1, className: 'key-function' },
-      { code: 'F2', display: 'F2', row: 0, col: 2, className: 'key-function' },
-      { code: 'F3', display: 'F3', row: 0, col: 3, className: 'key-function' },
-      { code: 'F4', display: 'F4', row: 0, col: 4, className: 'key-function' },
-      { code: 'F5', display: 'F5', row: 0, col: 5, className: 'key-function' },
-      { code: 'F6', display: 'F6', row: 0, col: 6, className: 'key-function' },
-      { code: 'F7', display: 'F7', row: 0, col: 7, className: 'key-function' },
-      { code: 'F8', display: 'F8', row: 0, col: 8, className: 'key-function' },
-      { code: 'F9', display: 'F9', row: 0, col: 9, className: 'key-function' },
-      { code: 'F10', display: 'F10', row: 0, col: 10, className: 'key-function' },
-      { code: 'F11', display: 'F11', row: 0, col: 11, className: 'key-function' },
-      { code: 'F12', display: 'F12', row: 0, col: 12, className: 'key-function' }
+      { code: 'Dead', display: '', row: 0, col: 1 },
+      { code: 'F1', display: 'F1', row: 0, col: 2, className: 'key-function' },
+      { code: 'F2', display: 'F2', row: 0, col: 3, className: 'key-function' },
+      { code: 'F3', display: 'F3', row: 0, col: 4, className: 'key-function' },
+      { code: 'F4', display: 'F4', row: 0, col: 5, className: 'key-function' },
+      { code: 'Dead', display: '', row: 0, col: 6 },
+      { code: 'F5', display: 'F5', row: 0, col: 7, className: 'key-function' },
+      { code: 'F6', display: 'F6', row: 0, col: 8, className: 'key-function' },
+      { code: 'F7', display: 'F7', row: 0, col: 9, className: 'key-function' },
+      { code: 'F8', display: 'F8', row: 0, col: 10, className: 'key-function' },
+      { code: 'Dead', display: '', row: 0, col: 11 },
+      { code: 'F9', display: 'F9', row: 0, col: 12, className: 'key-function' },
+      { code: 'F10', display: 'F10', row: 0, col: 13, className: 'key-function' },
+      { code: 'F11', display: 'F11', row: 0, col: 14, className: 'key-function' },
+      { code: 'F12', display: 'F12', row: 0, col: 15, className: 'key-function' }
     ],
     // Number row
     [
@@ -51,11 +54,11 @@ export class KeyboardLayoutComponent implements OnInit, OnDestroy {
       { code: 'Digit0', display: '0', row: 1, col: 10 },
       { code: 'Minus', display: '-', row: 1, col: 11 },
       { code: 'Equal', display: '=', row: 1, col: 12 },
-      { code: 'Backspace', display: 'Backspace', row: 1, col: 13, width: 2, className: 'key-wide' }
+      { code: 'Backspace', display: 'Backspace', row: 1, col: 13, width: 2 }
     ],
     // QWERTY row (with ISO Enter spanning to next row)
     [
-      { code: 'Tab', display: 'Tab', row: 2, col: 0, width: 1.5, className: 'key-wide' },
+      { code: 'Tab', display: 'Tab', row: 2, col: 0, width: 1.5 },
       { code: 'KeyQ', display: 'Q', row: 2, col: 1 },
       { code: 'KeyW', display: 'W', row: 2, col: 2 },
       { code: 'KeyE', display: 'E', row: 2, col: 3 },
@@ -68,11 +71,11 @@ export class KeyboardLayoutComponent implements OnInit, OnDestroy {
       { code: 'KeyP', display: 'P', row: 2, col: 10 },
       { code: 'BracketLeft', display: '[', row: 2, col: 11 },
       { code: 'BracketRight', display: ']', row: 2, col: 12 },
-      { code: 'Enter', display: 'Enter', row: 2, col: 13, width: 1.25, className: 'key-enter-iso' }
+      { code: 'Enter', display: 'Enter', row: 2, col: 13, className: 'key-enter-iso' }
     ],
     // ASDF row (with ISO Enter continuation and UK hash key)
     [
-      { code: 'CapsLock', display: 'Caps', row: 3, col: 0, width: 1.75, className: 'key-wide' },
+      { code: 'CapsLock', display: 'Caps', row: 3, col: 0, width: 1.75 },
       { code: 'KeyA', display: 'A', row: 3, col: 1 },
       { code: 'KeyS', display: 'S', row: 3, col: 2 },
       { code: 'KeyD', display: 'D', row: 3, col: 3 },
@@ -88,7 +91,7 @@ export class KeyboardLayoutComponent implements OnInit, OnDestroy {
     ],
     // ZXCV row (with UK backslash key)
     [
-      { code: 'ShiftLeft', display: 'Shift', row: 4, col: 0, width: 1.25, className: 'key-wide' },
+      { code: 'ShiftLeft', display: 'Shift', row: 4, col: 0, width: 1.25 },
       { code: 'IntlBackslash', display: '\\', row: 4, col: 1 },
       { code: 'KeyZ', display: 'Z', row: 4, col: 2 },
       { code: 'KeyX', display: 'X', row: 4, col: 3 },
@@ -100,18 +103,18 @@ export class KeyboardLayoutComponent implements OnInit, OnDestroy {
       { code: 'Comma', display: ',', row: 4, col: 9 },
       { code: 'Period', display: '.', row: 4, col: 10 },
       { code: 'Slash', display: '/', row: 4, col: 11 },
-      { code: 'ShiftRight', display: 'Shift', row: 4, col: 12, width: 2.75, className: 'key-wide' }
+      { code: 'ShiftRight', display: 'Shift', row: 4, col: 12, width: 2.75 }
     ],
     // Bottom row
     [
-      { code: 'ControlLeft', display: 'Ctrl', row: 5, col: 0, width: 1.25, className: 'key-wide' },
-      { code: 'MetaLeft', display: 'Win', row: 5, col: 1, width: 1.25, className: 'key-wide' },
-      { code: 'AltLeft', display: 'Alt', row: 5, col: 2, width: 1.25, className: 'key-wide' },
-      { code: 'Space', display: 'Space', row: 5, col: 3, width: 6.25, className: 'key-space' },
-      { code: 'AltRight', display: 'AltGr', row: 5, col: 4, width: 1.25, className: 'key-wide' },
-      { code: 'MetaRight', display: 'Win', row: 5, col: 5, width: 1.25, className: 'key-wide' },
-      { code: 'ContextMenu', display: 'Menu', row: 5, col: 6, width: 1.25, className: 'key-wide' },
-      { code: 'ControlRight', display: 'Ctrl', row: 5, col: 7, width: 1.25, className: 'key-wide' }
+      { code: 'ControlLeft', display: 'Ctrl', row: 5, col: 0, width: 1.5 },
+      { code: 'MetaLeft', display: 'Win', row: 5, col: 1 },
+      { code: 'AltLeft', display: 'Alt', row: 5, col: 2, width: 1.25 },
+      { code: 'Space', display: 'Space', row: 5, col: 3, className: 'key-space' },
+      { code: 'AltRight', display: 'AltGr', row: 5, col: 4, width: 1.25 },
+      { code: 'MetaRight', display: 'Win', row: 5, col: 5 },
+      { code: 'ContextMenu', display: 'Menu', row: 5, col: 6 },
+      { code: 'ControlRight', display: 'Ctrl', row: 5, col: 7, width: 1.25 }
     ]
   ];
 
@@ -164,18 +167,27 @@ export class KeyboardLayoutComponent implements OnInit, OnDestroy {
 
   getKeyClasses(key: KeyboardKey): string {
     let classes = 'keyboard-key';
+    if (key.code === 'Dead') {
+      classes = 'keyboard-dead-key'
+    }
     
     if (key.className) {
       classes += ` ${key.className}`;
     }
 
-    const mapping = this.keyMappings.get(key.code);
-    if (mapping && mapping.actionId) {
-      classes += ' key-mapped';
+    if (key.width) {
+      classes += ' key-width-' + key.width*100;
     }
 
-    if (this.selectedAction) {
-      classes += ' key-selectable';
+    if (key.code === 'Dead') {
+      const mapping = this.keyMappings.get(key.code);
+      if (mapping && mapping.actionId) {
+        classes += ' key-mapped';
+      }
+
+      if (this.selectedAction) {
+        classes += ' key-selectable';
+      }
     }
 
     return classes;
