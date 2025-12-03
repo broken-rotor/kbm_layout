@@ -1,9 +1,15 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, combineLatest } from 'rxjs';
 import { ActionsService } from '../../services/actions.service';
-import { Action } from '../../models/interfaces';
+import { ColorGroupsService } from '../../services/color-groups.service';
+import { Action, ColorGroup } from '../../models/interfaces';
 import { ActionDialogComponent } from '../action-dialog/action-dialog.component';
+
+interface ColorGroupInfo {
+  group: ColorGroup;
+  count: number;
+}
 
 @Component({
   selector: 'app-actions-list',
@@ -14,18 +20,31 @@ import { ActionDialogComponent } from '../action-dialog/action-dialog.component'
 })
 export class ActionsListComponent implements OnInit, OnDestroy {
   private actionsService = inject(ActionsService);
+  private colorGroupsService = inject(ColorGroupsService);
   private destroy$ = new Subject<void>();
 
   actions: Action[] = [];
+  filteredActions: Action[] = [];
   selectedAction: Action | null = null;
   showActionDialog = false;
   editingAction: Action | null = null;
+  
+  colorGroups: ColorGroup[] = [];
+  colorGroupsWithActions: ColorGroupInfo[] = [];
+  selectedColorGroupId: string | null = null;
 
   ngOnInit(): void {
-    this.actionsService.actions$
+    // Combine actions and color groups data
+    combineLatest([
+      this.actionsService.actions$,
+      this.colorGroupsService.colorGroups$
+    ])
       .pipe(takeUntil(this.destroy$))
-      .subscribe(actions => {
+      .subscribe(([actions, colorGroups]) => {
         this.actions = actions;
+        this.colorGroups = colorGroups;
+        this.updateColorGroupsWithActions();
+        this.updateFilteredActions();
       });
 
     this.actionsService.selectedAction$
@@ -81,8 +100,9 @@ export class ActionsListComponent implements OnInit, OnDestroy {
         colorGroupId: actionData.colorGroupId
       });
     } else {
-      // Create new action
-      this.actionsService.addAction(actionData.name, actionData.colorGroupId);
+      // Create new action with the selected color group (or the provided one)
+      const colorGroupId = actionData.colorGroupId || this.selectedColorGroupId || this.getFirstAvailableColorGroupId();
+      this.actionsService.addAction(actionData.name, colorGroupId);
     }
     this.closeDialog();
   }
@@ -148,5 +168,103 @@ export class ActionsListComponent implements OnInit, OnDestroy {
     const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
     
     return luminance > 0.5 ? '#000000' : '#ffffff';
+  }
+
+  // New methods for tabbed functionality
+  onColorTabClick(colorGroupId: string): void {
+    this.selectedColorGroupId = colorGroupId;
+    this.updateFilteredActions();
+  }
+
+  private updateColorGroupsWithActions(): void {
+    // Create a map of color group IDs to action counts
+    const actionCounts = new Map<string, number>();
+    this.actions.forEach(action => {
+      const count = actionCounts.get(action.colorGroupId) || 0;
+      actionCounts.set(action.colorGroupId, count + 1);
+    });
+
+    // Filter color groups to only show those with actions
+    this.colorGroupsWithActions = this.colorGroups
+      .filter(group => actionCounts.has(group.id))
+      .map(group => ({
+        group,
+        count: actionCounts.get(group.id) || 0
+      }))
+      .sort((a, b) => a.group.name.localeCompare(b.group.name));
+
+    // Auto-select the first color group if none is selected
+    if (!this.selectedColorGroupId && this.colorGroupsWithActions.length > 0) {
+      this.selectedColorGroupId = this.colorGroupsWithActions[0].group.id;
+    }
+
+    // If the selected color group no longer has actions, select the first available one
+    if (this.selectedColorGroupId && !this.colorGroupsWithActions.some(info => info.group.id === this.selectedColorGroupId)) {
+      this.selectedColorGroupId = this.colorGroupsWithActions.length > 0 ? this.colorGroupsWithActions[0].group.id : null;
+    }
+  }
+
+  private updateFilteredActions(): void {
+    if (this.selectedColorGroupId) {
+      this.filteredActions = this.actions.filter(action => action.colorGroupId === this.selectedColorGroupId);
+    } else {
+      this.filteredActions = this.actions;
+    }
+  }
+
+  private getFirstAvailableColorGroupId(): string {
+    return this.colorGroups.length > 0 ? this.colorGroups[0].id : '';
+  }
+
+  getColorEmoji(color: string): string {
+    // Convert color to a simple emoji based on hue
+    const r = parseInt(color.slice(1, 3), 16);
+    const g = parseInt(color.slice(3, 5), 16);
+    const b = parseInt(color.slice(5, 7), 16);
+    
+    // Determine dominant color
+    if (r > g && r > b) {
+      return '🔴'; // Red
+    } else if (g > r && g > b) {
+      return '🟢'; // Green
+    } else if (b > r && b > g) {
+      return '🔵'; // Blue
+    } else if (r > 200 && g > 200 && b < 100) {
+      return '🟡'; // Yellow
+    } else if (r > 200 && g < 100 && b > 200) {
+      return '🟣'; // Purple/Magenta
+    } else if (r > 200 && g > 100 && b < 100) {
+      return '🟠'; // Orange
+    } else if (r < 100 && g > 200 && b > 200) {
+      return '🩵'; // Cyan
+    } else {
+      return '⚪'; // Default/Gray
+    }
+  }
+
+  getColorName(color: string): string {
+    // Convert color to a simple name based on hue
+    const r = parseInt(color.slice(1, 3), 16);
+    const g = parseInt(color.slice(3, 5), 16);
+    const b = parseInt(color.slice(5, 7), 16);
+    
+    // Determine dominant color
+    if (r > g && r > b) {
+      return 'Red';
+    } else if (g > r && g > b) {
+      return 'Green';
+    } else if (b > r && b > g) {
+      return 'Blue';
+    } else if (r > 200 && g > 200 && b < 100) {
+      return 'Yellow';
+    } else if (r > 200 && g < 100 && b > 200) {
+      return 'Purple';
+    } else if (r > 200 && g > 100 && b < 100) {
+      return 'Orange';
+    } else if (r < 100 && g > 200 && b > 200) {
+      return 'Cyan';
+    } else {
+      return 'Gray';
+    }
   }
 }

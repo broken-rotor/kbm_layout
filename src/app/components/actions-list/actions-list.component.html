@@ -2,9 +2,26 @@
   <div class="actions-header">
     <h3>Actions Management</h3>
   </div>
+
+  <!-- Color Group Tabs -->
+  @if (colorGroupsWithActions.length > 0) {
+    <div class="color-tabs">
+      @for (groupInfo of colorGroupsWithActions; track groupInfo.group.id) {
+        <button 
+          class="color-tab {{ selectedColorGroupId === groupInfo.group.id ? 'active' : '' }}"
+          (click)="onColorTabClick(groupInfo.group.id)"
+          [style.background-color]="groupInfo.group.color"
+          [style.color]="getContrastColor(groupInfo.group.color)">
+          <span class="tab-emoji">{{ getColorEmoji(groupInfo.group.color) }}</span>
+          <span class="tab-name">{{ getColorName(groupInfo.group.color) }}</span>
+          <span class="tab-count">({{ groupInfo.count }})</span>
+        </button>
+      }
+    </div>
+  }
   
   <div class="actions-list">
-    @for (action of actions; track action.id) {
+    @for (action of filteredActions; track action.id) {
       <div
         class="{{ getActionClasses(action) }}"
         (click)="onActionClick(action)"
@@ -56,7 +73,7 @@
   </div>
   
   <div class="instructions">
-    💡 Instructions: Select an action above, then click a key on the keyboard to assign the mapping. Use 🚫 to clear a keybind without removing the action.
+    💡 Instructions: Select an action above, then click a key on the keyboard to assign the mapping. Use 🚫 to clear a keybind without removing the action. Switch between color tabs to organize your actions by type.
   </div>
 </div>
 
