@@ -96,6 +96,11 @@ export class ColorGroupsService {
     this.saveColorGroups();
   }
 
+  setColorGroups(colorGroups: ColorGroup[]): void {
+    this.colorGroupsSubject.next(colorGroups);
+    // Note: We don't save to localStorage here since color groups are now managed per keybind set
+  }
+
   private generateId(): string {
     return 'color-group-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
   }

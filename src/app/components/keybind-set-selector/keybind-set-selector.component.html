@@ -1,0 +1,126 @@
+<div class="keybind-set-selector">
+  <!-- Keybind Set Dropdown -->
+  <select 
+    class="keybind-set-dropdown"
+    [value]="selectedKeybindSet?.id || ''"
+    (change)="onKeybindSetChange($event)"
+    title="Select keybind set">
+    @for (set of keybindSets; track set.id) {
+      <option [value]="set.id">{{ set.name }}</option>
+    }
+  </select>
+
+  <!-- Management Buttons -->
+  <div class="management-buttons">
+    <button 
+      class="management-btn add-btn"
+      (click)="openAddModal()"
+      title="Add new keybind set">
+      <span class="btn-icon">+</span>
+    </button>
+    
+    <button 
+      class="management-btn rename-btn"
+      (click)="openRenameModal()"
+      [disabled]="!selectedKeybindSet"
+      title="Rename current keybind set">
+      <span class="btn-icon">✏️</span>
+    </button>
+    
+    <button 
+      class="management-btn delete-btn"
+      (click)="openDeleteModal()"
+      [disabled]="!canDelete()"
+      title="Delete current keybind set">
+      <span class="btn-icon">🗑️</span>
+    </button>
+  </div>
+</div>
+
+<!-- Add Modal -->
+@if (showAddModal) {
+  <div class="modal-overlay" (click)="closeAddModal()" (keydown.escape)="closeAddModal()" tabindex="0">
+    <div class="modal-content" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()" tabindex="0">
+      <div class="modal-header">
+        <h3>Add New Keybind Set</h3>
+        <button class="close-btn" (click)="closeAddModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <label for="newSetName">Set Name:</label>
+        <input 
+          id="newSetName"
+          type="text" 
+          [(ngModel)]="newSetName"
+          (keydown)="onKeydown($event, 'add')"
+          placeholder="Enter keybind set name"
+          maxlength="50"
+          #nameInput>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeAddModal()">Cancel</button>
+        <button 
+          class="btn btn-primary" 
+          (click)="confirmAdd()"
+          [disabled]="!newSetName.trim()">
+          Add Set
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Rename Modal -->
+@if (showRenameModal) {
+  <div class="modal-overlay" (click)="closeRenameModal()" (keydown.escape)="closeRenameModal()" tabindex="0">
+    <div class="modal-content" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()" tabindex="0">
+      <div class="modal-header">
+        <h3>Rename Keybind Set</h3>
+        <button class="close-btn" (click)="closeRenameModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <label for="renameSetName">Set Name:</label>
+        <input 
+          id="renameSetName"
+          type="text" 
+          [(ngModel)]="renameSetName"
+          (keydown)="onKeydown($event, 'rename')"
+          placeholder="Enter new name"
+          maxlength="50">
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeRenameModal()">Cancel</button>
+        <button 
+          class="btn btn-primary" 
+          (click)="confirmRename()"
+          [disabled]="!renameSetName.trim()">
+          Rename
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Delete Confirmation Modal -->
+@if (showDeleteModal) {
+  <div class="modal-overlay" (click)="closeDeleteModal()" (keydown.escape)="closeDeleteModal()" tabindex="0">
+    <div class="modal-content" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()" tabindex="0">
+      <div class="modal-header">
+        <h3>Delete Keybind Set</h3>
+        <button class="close-btn" (click)="closeDeleteModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete the keybind set <strong>"{{ selectedKeybindSet?.name }}"</strong>?</p>
+        <p class="warning-text">This action cannot be undone. All actions and key mappings in this set will be permanently lost.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeDeleteModal()">Cancel</button>
+        <button 
+          class="btn btn-danger" 
+          (click)="confirmDelete()"
+          (keydown)="onKeydown($event, 'delete')">
+          Delete Set
+        </button>
+      </div>
+    </div>
+  </div>
+}

@@ -2,17 +2,21 @@
   <header class="app-header">
     <h1>🎮 {{ title }}</h1>
     
-    <div class="device-tabs">
-      <button 
-        class="{{ getDeviceTabClass(DeviceType.KEYBOARD) }}"
-        (click)="onDeviceSelect(DeviceType.KEYBOARD)">
-        📱 Keyboard
-      </button>
-      <button 
-        class="{{ getDeviceTabClass(DeviceType.MOUSE) }}"
-        (click)="onDeviceSelect(DeviceType.MOUSE)">
-        🖱️ Mouse
-      </button>
+    <div class="header-controls">
+      <app-keybind-set-selector></app-keybind-set-selector>
+      
+      <div class="device-tabs">
+        <button 
+          class="{{ getDeviceTabClass(DeviceType.KEYBOARD) }}"
+          (click)="onDeviceSelect(DeviceType.KEYBOARD)">
+          📱 Keyboard
+        </button>
+        <button 
+          class="{{ getDeviceTabClass(DeviceType.MOUSE) }}"
+          (click)="onDeviceSelect(DeviceType.MOUSE)">
+          🖱️ Mouse
+        </button>
+      </div>
     </div>
   </header>
 
@@ -34,4 +38,3 @@
     </section>
   </main>
 </div>
-

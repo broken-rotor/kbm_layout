@@ -67,3 +67,13 @@ export interface MouseButton {
   height: number;
   className?: string;
 }
+
+export interface KeybindSet {
+  id: string;
+  name: string;
+  actions: Action[];
+  keyMappings: Map<string, KeyMapping>;
+  colorGroups: ColorGroup[];
+  createdAt: Date;
+  lastModified: Date;
+}
