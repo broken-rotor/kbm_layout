@@ -6,6 +6,7 @@ import { DeviceType } from './models/interfaces';
 import { KeyboardLayoutComponent } from './components/keyboard-layout/keyboard-layout.component';
 import { MouseLayoutComponent } from './components/mouse-layout/mouse-layout.component';
 import { ActionsListComponent } from './components/actions-list/actions-list.component';
+import { KeybindSetSelectorComponent } from './components/keybind-set-selector/keybind-set-selector.component';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +14,8 @@ import { ActionsListComponent } from './components/actions-list/actions-list.com
     CommonModule,
     KeyboardLayoutComponent,
     MouseLayoutComponent,
-    ActionsListComponent
+    ActionsListComponent,
+    KeybindSetSelectorComponent
   ],
   templateUrl: './app.html',
   styleUrl: './app.css'

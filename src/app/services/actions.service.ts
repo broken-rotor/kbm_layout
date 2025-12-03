@@ -1,9 +1,10 @@
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, combineLatest } from 'rxjs';
 import { Action, DeviceType, KeyMapping, ModifierSet } from '../models/interfaces';
 import { StorageService } from './storage.service';
 import { ColorGroupsService } from './color-groups.service';
 import { ModifierStateService } from './modifier-state.service';
+import { KeybindSetsService } from './keybind-sets.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,7 @@ export class ActionsService {
   private storageService = inject(StorageService);
   private colorGroupsService = inject(ColorGroupsService);
   private modifierStateService = inject(ModifierStateService);
+  private keybindSetsService = inject(KeybindSetsService);
 
   private actionsSubject = new BehaviorSubject<Action[]>([]);
   private selectedActionSubject = new BehaviorSubject<Action | null>(null);
@@ -24,20 +26,33 @@ export class ActionsService {
   public keyMappings$ = this.keyMappingsSubject.asObservable();
 
   constructor() {
-    this.loadData();
+    this.initializeFromKeybindSets();
   }
 
-  private loadData(): void {
-    const actions = this.storageService.loadActions();
-    const keyMappings = this.storageService.loadKeyMappings();
-
-    this.actionsSubject.next(actions);
-    this.keyMappingsSubject.next(keyMappings);
+  private initializeFromKeybindSets(): void {
+    // Subscribe to the selected keybind set and update actions/mappings accordingly
+    this.keybindSetsService.selectedKeybindSet$.subscribe(keybindSet => {
+      if (keybindSet) {
+        this.actionsSubject.next(keybindSet.actions);
+        this.keyMappingsSubject.next(keybindSet.keyMappings);
+        
+        // Update color groups service with the keybind set's color groups
+        this.colorGroupsService.setColorGroups(keybindSet.colorGroups);
+      } else {
+        this.actionsSubject.next([]);
+        this.keyMappingsSubject.next(new Map());
+      }
+    });
   }
 
   private saveData(): void {
-    this.storageService.saveActions(this.actionsSubject.value);
-    this.storageService.saveKeyMappings(this.keyMappingsSubject.value);
+    // Update the current keybind set with the latest actions and mappings
+    this.keybindSetsService.updateCurrentSetActions(this.actionsSubject.value);
+    this.keybindSetsService.updateCurrentSetKeyMappings(this.keyMappingsSubject.value);
+    
+    // Also save the current color groups to the keybind set
+    // We need to access the private colorGroupsSubject to get the current value
+    // For now, we'll let the ColorGroupsService handle its own updates to keybind sets
   }
 
   // Actions management

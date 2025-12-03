@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Action, ColorGroup, KeyMapping, ModifierSet } from '../models/interfaces';
+import { Action, ColorGroup, KeyMapping, ModifierSet, KeybindSet } from '../models/interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -8,8 +8,9 @@ export class StorageService {
   private readonly ACTIONS_KEY = 'kbm_layout_actions';
   private readonly KEY_MAPPINGS_KEY = 'kbm_layout_key_mappings';
   private readonly COLOR_GROUPS_KEY = 'kbm_layout_color_groups';
+  private readonly KEYBIND_SETS_KEY = 'kbm_layout_keybind_sets';
   private readonly STORAGE_VERSION_KEY = 'kbm_layout_storage_version';
-  private readonly CURRENT_STORAGE_VERSION = 3;
+  private readonly CURRENT_STORAGE_VERSION = 4;
 
   // Actions storage
   saveActions(actions: Action[]): void {
@@ -129,12 +130,61 @@ export class StorageService {
     }
   }
 
+  // Keybind sets storage
+  saveKeybindSets(keybindSets: KeybindSet[]): void {
+    try {
+      // Serialize keybind sets with nested Maps and Dates
+      const serializedSets = keybindSets.map(set => ({
+        ...set,
+        keyMappings: Array.from(set.keyMappings.entries()),
+        actions: set.actions.map(action => ({
+          ...action,
+          keyMappings: action.keyMappings
+            ? Array.from(action.keyMappings.entries())
+            : undefined
+        })),
+        createdAt: set.createdAt.toISOString(),
+        lastModified: set.lastModified.toISOString()
+      }));
+      localStorage.setItem(this.KEYBIND_SETS_KEY, JSON.stringify(serializedSets));
+      this.updateStorageVersion();
+    } catch (error) {
+      console.error('Failed to save keybind sets to localStorage:', error);
+    }
+  }
+
+  loadKeybindSets(): KeybindSet[] {
+    try {
+      const stored = localStorage.getItem(this.KEYBIND_SETS_KEY);
+      if (!stored) return [];
+
+      const parsedSets: any[] = JSON.parse(stored);
+      // Deserialize keybind sets with nested Maps and Dates
+      return parsedSets.map(set => ({
+        ...set,
+        keyMappings: new Map(set.keyMappings || []),
+        actions: set.actions.map((action: any) => ({
+          ...action,
+          keyMappings: action.keyMappings
+            ? new Map(action.keyMappings)
+            : undefined
+        })),
+        createdAt: new Date(set.createdAt),
+        lastModified: new Date(set.lastModified)
+      }));
+    } catch (error) {
+      console.error('Failed to load keybind sets from localStorage:', error);
+      return [];
+    }
+  }
+
   // Clear all data
   clearAll(): void {
     try {
       localStorage.removeItem(this.ACTIONS_KEY);
       localStorage.removeItem(this.KEY_MAPPINGS_KEY);
       localStorage.removeItem(this.COLOR_GROUPS_KEY);
+      localStorage.removeItem(this.KEYBIND_SETS_KEY);
       localStorage.removeItem(this.STORAGE_VERSION_KEY);
     } catch (error) {
       console.error('Failed to clear localStorage:', error);

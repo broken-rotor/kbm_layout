@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ColorGroup } from '../models/interfaces';
 
@@ -94,6 +94,11 @@ export class ColorGroupsService {
     
     this.colorGroupsSubject.next(updatedGroups);
     this.saveColorGroups();
+  }
+
+  setColorGroups(colorGroups: ColorGroup[]): void {
+    this.colorGroupsSubject.next(colorGroups);
+    // Note: We don't save to localStorage here since color groups are now managed per keybind set
   }
 
   private generateId(): string {

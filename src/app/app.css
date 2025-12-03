@@ -15,6 +15,12 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
 .app-header h1 {
   margin: 0;
   color: #333;
@@ -96,4 +102,23 @@
 .actions-section {
   display: flex;
   flex-direction: column;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .app-header {
+    padding: 15px 20px;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .header-controls {
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .app-header h1 {
+    font-size: 20px;
+  }
 }
