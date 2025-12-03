@@ -18,7 +18,21 @@
       </div>
       
       <div class="form-group">
-        <div class="form-label">Color Group</div>
+        <div class="form-label">
+          Color Group
+          <button 
+            class="btn btn-sm btn-outline manage-groups-btn" 
+            (click)="toggleGroupManager()"
+            type="button">
+            {{ showGroupManager ? 'Hide' : 'Manage' }} Groups
+          </button>
+        </div>
+        
+        <!-- Group Manager -->
+        @if (showGroupManager) {
+          <app-color-groups-management></app-color-groups-management>
+        }
+        
         <div class="color-groups-section">
           <div class="color-groups-grid">
             @for (group of colorGroups; track group.id) {
