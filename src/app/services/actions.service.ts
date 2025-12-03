@@ -221,6 +221,31 @@ export class ActionsService {
     return colorGroup?.color || '#cccccc'; // Default gray if color group not found
   }
 
+  // Check if any modifier key has an action bound to it
+  isModifierKeyBound(modifierKey: 'ctrl' | 'alt' | 'shift'): boolean {
+    const modifierKeyCodes = {
+      ctrl: ['ControlLeft', 'ControlRight'],
+      alt: ['AltLeft', 'AltRight'],
+      shift: ['ShiftLeft', 'ShiftRight']
+    };
+
+    const keyCodes = modifierKeyCodes[modifierKey];
+    const currentMappings = this.keyMappingsSubject.value;
+
+    // Check if any of the modifier key codes have actions bound to them
+    for (const keyCode of keyCodes) {
+      // Check all modifier sets for this key
+      for (const modifierSet of Object.values(ModifierSet)) {
+        const mappingKey = this.createModifierMappingKey(keyCode, modifierSet);
+        if (currentMappings.has(mappingKey)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
   private generateId(): string {
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
   }

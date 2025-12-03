@@ -1,10 +1,4 @@
 <div class="mouse-container">
-  @if (currentModifierSet !== 'none') {
-    <div class="modifier-indicator">
-      <span class="modifier-label">Active Modifier Set:</span>
-      <span class="modifier-value">{{ currentModifierSet }}</span>
-    </div>
-  }
   <div class="mouse-layout">
     <div class="mouse-body">
       @for (button of mouseButtons; track button.code) {

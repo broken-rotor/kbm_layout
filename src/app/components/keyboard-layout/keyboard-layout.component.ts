@@ -135,10 +135,13 @@ export class KeyboardLayoutComponent implements OnInit, OnDestroy {
         this.keyMappings = mappings;
       });
 
-    this.modifierStateService.currentModifierSet$
+    this.modifierStateService.modifierState$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(modifierSet => {
-        this.currentModifierSet = modifierSet;
+      .subscribe(() => {
+        // Calculate effective modifier set considering conflicts
+        this.currentModifierSet = this.modifierStateService.getEffectiveModifierSet(
+          (modifier) => this.actionsService.isModifierKeyBound(modifier)
+        );
         this.cdr.markForCheck();
       });
   }
@@ -170,6 +173,9 @@ export class KeyboardLayoutComponent implements OnInit, OnDestroy {
     const mapping = this.actionsService.getCurrentMappingForKey(key.code);
     const baseStyle: Record<string, string> = {};
 
+    // Check if this is a modifier key and if it's currently pressed
+    const isModifierPressed = this.isModifierKeyPressed(key.code);
+    
     if (mapping && mapping.actionId) {
       const action = this.actionsService.getActionById(mapping.actionId);
       if (action) {
@@ -179,9 +185,36 @@ export class KeyboardLayoutComponent implements OnInit, OnDestroy {
         baseStyle['color'] = this.getContrastColor(actionColor);
         baseStyle['border-color'] = actionColor;
       }
+    } else if (isModifierPressed) {
+      // Highlight pressed modifier keys that don't have actions bound
+      baseStyle['background'] = '#4a90e2';
+      baseStyle['color'] = '#ffffff';
+      baseStyle['border-color'] = '#357abd';
+      baseStyle['box-shadow'] = '0 0 8px rgba(74, 144, 226, 0.6)';
     }
 
     return baseStyle;
+  }
+
+  private isModifierKeyPressed(keyCode: string): boolean {
+    const modifierState = this.modifierStateService.getCurrentModifierState();
+    
+    switch (keyCode) {
+      case 'ControlLeft':
+        return modifierState.ctrlLeft;
+      case 'ControlRight':
+        return modifierState.ctrlRight;
+      case 'AltLeft':
+        return modifierState.altLeft;
+      case 'AltRight':
+        return modifierState.altRight;
+      case 'ShiftLeft':
+        return modifierState.shiftLeft;
+      case 'ShiftRight':
+        return modifierState.shiftRight;
+      default:
+        return false;
+    }
   }
 
   getKeyClasses(key: KeyboardKey): string {

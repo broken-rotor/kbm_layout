@@ -45,10 +45,13 @@ export class MouseLayoutComponent implements OnInit, OnDestroy {
         this.keyMappings = mappings;
       });
 
-    this.modifierStateService.currentModifierSet$
+    this.modifierStateService.modifierState$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(modifierSet => {
-        this.currentModifierSet = modifierSet;
+      .subscribe(() => {
+        // Calculate effective modifier set considering conflicts
+        this.currentModifierSet = this.modifierStateService.getEffectiveModifierSet(
+          (modifier) => this.actionsService.isModifierKeyBound(modifier)
+        );
       });
   }
 
