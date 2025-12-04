@@ -131,10 +131,10 @@ export class ActionsListComponent implements OnInit, OnDestroy {
   getMappingDisplay(action: Action): string {
     const mappings: string[] = [];
 
-    // All mappings are now in keyMappings (all modifier sets including NONE)
+    // All mappings are now in keyMappings using composite keys (keyCode:modifierSet)
     if (action.keyMappings && action.keyMappings.size > 0) {
-      action.keyMappings.forEach((mapping, modifierSet) => {
-        const modifierPrefix = this.getModifierPrefix(modifierSet);
+      action.keyMappings.forEach((mapping) => {
+        const modifierPrefix = this.getModifierPrefix(mapping.modifierSet);
         mappings.push(`${modifierPrefix}${mapping.displayName}`);
       });
     }

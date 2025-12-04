@@ -169,15 +169,11 @@ export class ActionsService {
     const currentMappings = this.keyMappingsSubject.value;
     const newMappings = new Map(currentMappings);
 
-    // Remove existing mapping for this key+modifier combination
+    // Remove existing mapping for this key+modifier combination (if any)
     newMappings.delete(mappingKey);
 
-    // Remove existing mapping for this action in the target modifier set
-    newMappings.forEach((mapping, key) => {
-      if (mapping.actionId === selectedAction.id && mapping.modifierSet === targetModifierSet) {
-        newMappings.delete(key);
-      }
-    });
+    // NOTE: We no longer remove existing mappings for the same action
+    // This allows multiple different keys to be bound to the same action
 
     // Add new mapping
     const newMapping: KeyMapping = {
@@ -191,9 +187,18 @@ export class ActionsService {
     newMappings.set(mappingKey, newMapping);
     this.keyMappingsSubject.next(newMappings);
 
-    // Update action's keyMappings map
-    const actionKeyMappings = selectedAction.keyMappings || new Map<ModifierSet, KeyMapping>();
-    actionKeyMappings.set(targetModifierSet, newMapping);
+    // Update action's keyMappings map to include this new mapping
+    // We need to collect all mappings for this action and rebuild the map
+    const actionKeyMappings = new Map<string, KeyMapping>();
+    
+    // Collect all existing mappings for this action
+    newMappings.forEach((mapping, key) => {
+      if (mapping.actionId === selectedAction.id) {
+        // Use the full mapping key (keyCode:modifierSet) as the key
+        actionKeyMappings.set(key, mapping);
+      }
+    });
+
     this.updateAction(selectedAction.id, { keyMappings: actionKeyMappings });
 
     this.saveData();
@@ -211,11 +216,18 @@ export class ActionsService {
       newMappings.delete(mappingKey);
       this.keyMappingsSubject.next(newMappings);
 
-      // Update action's keyMappings map
+      // Update action's keyMappings map - rebuild it with remaining mappings
       const action = this.getActionById(mapping.actionId);
-      if (action && action.keyMappings) {
-        const actionKeyMappings = new Map(action.keyMappings);
-        actionKeyMappings.delete(targetModifierSet);
+      if (action) {
+        const actionKeyMappings = new Map<string, KeyMapping>();
+        
+        // Collect all remaining mappings for this action
+        newMappings.forEach((remainingMapping, key) => {
+          if (remainingMapping.actionId === mapping.actionId) {
+            actionKeyMappings.set(key, remainingMapping);
+          }
+        });
+
         this.updateAction(mapping.actionId, { keyMappings: actionKeyMappings });
       }
     }

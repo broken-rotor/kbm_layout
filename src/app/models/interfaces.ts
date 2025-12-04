@@ -9,7 +9,7 @@ export interface Action {
   id: string;
   name: string;
   colorGroupId: string;
-  keyMappings?: Map<ModifierSet, KeyMapping>;
+  keyMappings?: Map<string, KeyMapping>;
 }
 
 export enum ModifierSet {
